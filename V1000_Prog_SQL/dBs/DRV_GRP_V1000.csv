@@ -1,0 +1,52 @@
+﻿IDX,DRV_GRP,DRV_GRP_DESC,DRV_LIST_IDX
+1,A1,Initialization,0
+2,A2,User Parmaeters,8
+3,b1,Operation Mode Selection,41
+4,b2,DC Injection Braking,51
+5,b3,Speed Search,58
+6,b4,Delay Timer,72
+7,b5,PID Control,74
+8,b6,Dwell Function,102
+9,b8,Energy Saving,106
+10,C1,Acceleration/Deceleration Time,112
+11,C2,S-Curve Accel/Decel,124
+12,C3,Motor Slip Compensation,128
+13,C4,Motor Torque Compensation,133
+14,C5,Speed Control (ASR),139
+15,C6,Carrier Frequency,144
+16,d1,Frequency Reference,149
+17,d2,Reference Limits,166
+18,d3,Jump Fequencies,169
+19,d4,Frequency Reference Hold,173
+20,d7,Offset Frequency,182
+21,E1,Motor 1 V/f Characteristics,185
+22,E2,Motor 1 Parameters,197
+23,E3,Motor 2 V/f Characteristics,209
+24,E4,Motor 2 Parameters,220
+25,F1,Fault Detection During PG Speed Control,234
+26,F6,Network Communications,242
+27,F7,Ethernet/IP & Modbus TCP/IP Communications,287
+28,H1,Digital Inputs,314
+29,H2,Digital Outputs,321
+30,H3,Analog Inputs,325
+31,H4,Analog Outputs,337
+32,H5,Serial Communications Setup,340
+33,H6,Pulse Train I/O Setup,351
+34,L1,Motor overload,358
+35,L2,Power Loss Ride Thru,366
+36,L3,Stall Prevention,375
+37,L4,Reference Detection,389
+38,L5,Fault Restart,397
+39,L6,Overtorque Detection,401
+40,L7,Torque Limit,411
+41,L8,Hardware Protection,417
+42,n1,Hunting Prevention,436
+43,n2,Speed Feedback Detection,440
+44,n3,High-Slip braking,443
+45,n6,Motor Line-to-Line Resistance Online Tuning,450
+46,n8,PM Motor Control,451
+47,o1,Monitor Display Selection,467
+48,o2,Operator Keypad Functions,472
+49,o4,Maintenance Functions,481
+50,q,DWEZ Parameters,490
+51,r,DriveWorksEZ Connection,540

@@ -1,0 +1,15 @@
+﻿IDX,MACH_CODE,MACH_DESC,DRV_CNT,DRV1_NAME,DRV2_NAME,DRV3_NAME,DRV4_NAME,DRV5_NAME,CHRT_CNT
+1,M2100,Comitrol 2100,1,Feed Screw,,,,,0
+2,M3600,Comitrol 3600,1,Feed Screw,,,,,0
+3,M3610F,Comitrol 3610 with Feeder,1,Feed Screw,,,,,0
+4,M3640F,Comitrol 3640 with Feeder,1,Feed Screw,,,,,0
+5,M9300F,Comitrol 9300 with Feeder,1,Feed Screw,,,,,0
+6,MDCA,Diversacut 2110A,1,Drive Motor,,,,,0
+7,METRS,E-Translicer,2,Wheel Motor,Belt Motor,,,,1
+8,MLA,L-A,1,Drive Motor,,,,,0
+9,MM6,M6,1,Drive Motor,,,,,0
+10,MOC/MOC45,OC/OC-45,1,Wheel & Belt Motor,,,,,0
+11,MSPR2,Diversacut Sprint 2,1,Drive Motor,,,,,0
+12,MT2510,Translicer 2510,3,Wheel Motor,Primary Belt Motor,Secondary Belt Motor,,,1
+13,MTRS20,Translicer 2000,2,Wheel Motor,Belt Motor,,,,1
+14,MVSC,VSC,1,Belt Motor,,,,,0
