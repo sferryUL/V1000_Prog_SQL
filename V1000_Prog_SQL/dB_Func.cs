@@ -14,7 +14,7 @@ using System.Data.SqlClient;
 using System.Data.OleDb;
 
 
-namespace V1000_Drive_Programmer
+namespace V1000_Prog_SQL
 {
     partial class frmMain
     {
@@ -182,7 +182,7 @@ namespace V1000_Drive_Programmer
             }
 
             return ret_val;
-        }
+        }        
 
         private bool GetParamGrpList(DataRow p_Row, string p_Col, ref DataTable p_Tbl)
         {

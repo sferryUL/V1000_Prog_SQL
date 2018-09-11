@@ -1,4 +1,4 @@
-﻿namespace V1000_Drive_Programmer
+﻿namespace V1000_Prog_SQL
 {
     partial class frmMain
     {
@@ -73,13 +73,30 @@
             this.btnVFDMod = new System.Windows.Forms.Button();
             this.bwrkModVFD = new System.ComponentModel.BackgroundWorker();
             this.grpSetDrive = new System.Windows.Forms.GroupBox();
-            this.lblDriveDuty = new System.Windows.Forms.Label();
-            this.cmbDriveDuty = new System.Windows.Forms.ComboBox();
-            this.lblParamFullList = new System.Windows.Forms.Label();
-            this.lblParamGroup = new System.Windows.Forms.Label();
+            this.grpSetDrv = new System.Windows.Forms.GroupBox();
             this.lblDriveSel = new System.Windows.Forms.Label();
-            this.cmbDriveList = new System.Windows.Forms.ComboBox();
+            this.lblDriveDuty = new System.Windows.Forms.Label();
             this.cmbParamGroup = new System.Windows.Forms.ComboBox();
+            this.cmbDriveDuty = new System.Windows.Forms.ComboBox();
+            this.cmbDrvList = new System.Windows.Forms.ComboBox();
+            this.lblParamGroup = new System.Windows.Forms.Label();
+            this.grpSetMach = new System.Windows.Forms.GroupBox();
+            this.txtMachDrvName = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.txtMachChrtCnt = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.txtMachDrvCnt = new System.Windows.Forms.TextBox();
+            this.btnMachListDel = new System.Windows.Forms.Button();
+            this.btnMachListLoad = new System.Windows.Forms.Button();
+            this.btnMachListStore = new System.Windows.Forms.Button();
+            this.cmbMachChrtNum = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.cmbMachSel = new System.Windows.Forms.ComboBox();
+            this.lblSelMach = new System.Windows.Forms.Label();
+            this.cmbMachDrvNum = new System.Windows.Forms.ComboBox();
+            this.lblSelMotor = new System.Windows.Forms.Label();
+            this.lblParamFullList = new System.Windows.Forms.Label();
             this.dgvParamViewMisMatch = new System.Windows.Forms.DataGridView();
             this.cmMisMatchParamAddr = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmMisMatchParamNum = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -121,41 +138,24 @@
             this.label1 = new System.Windows.Forms.Label();
             this.cmbMtrPartNum = new System.Windows.Forms.ComboBox();
             this.lblMotorPartNum = new System.Windows.Forms.Label();
-            this.cmbMachSel = new System.Windows.Forms.ComboBox();
-            this.lblSelMach = new System.Windows.Forms.Label();
-            this.lblSelMotor = new System.Windows.Forms.Label();
             this.bwrkVFDVerify = new System.ComponentModel.BackgroundWorker();
             this.grpSetMotor = new System.Windows.Forms.GroupBox();
             this.btnMtrDel = new System.Windows.Forms.Button();
             this.btnMtrStore = new System.Windows.Forms.Button();
-            this.grpSetMach = new System.Windows.Forms.GroupBox();
-            this.txtMachDrvName = new System.Windows.Forms.TextBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.txtMachChrtCnt = new System.Windows.Forms.TextBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.txtMachDrvCnt = new System.Windows.Forms.TextBox();
-            this.btnMachListDel = new System.Windows.Forms.Button();
-            this.btnMachListLoad = new System.Windows.Forms.Button();
-            this.btnMachListStore = new System.Windows.Forms.Button();
-            this.cmbMachChrtNum = new System.Windows.Forms.ComboBox();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
-            this.cmbMachDrvNum = new System.Windows.Forms.ComboBox();
-            this.grpSetDrv = new System.Windows.Forms.GroupBox();
             this.grpCommSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewFull)).BeginInit();
             this.statusStrip1.SuspendLayout();
             this.ctxtSchedChng.SuspendLayout();
             this.ctxtDriveMod.SuspendLayout();
             this.grpSetDrive.SuspendLayout();
+            this.grpSetDrv.SuspendLayout();
+            this.grpSetMach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewMisMatch)).BeginInit();
             this.groupBox4.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewChng)).BeginInit();
             this.grpParamChng.SuspendLayout();
             this.grpSetMotor.SuspendLayout();
-            this.grpSetMach.SuspendLayout();
-            this.grpSetDrv.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtSlaveAddr
@@ -439,6 +439,30 @@
             this.grpSetDrive.TabStop = false;
             this.grpSetDrive.Text = "VFD Complete Parameter Information";
             // 
+            // grpSetDrv
+            // 
+            this.grpSetDrv.Controls.Add(this.lblDriveSel);
+            this.grpSetDrv.Controls.Add(this.lblDriveDuty);
+            this.grpSetDrv.Controls.Add(this.cmbParamGroup);
+            this.grpSetDrv.Controls.Add(this.cmbDriveDuty);
+            this.grpSetDrv.Controls.Add(this.cmbDrvList);
+            this.grpSetDrv.Controls.Add(this.lblParamGroup);
+            this.grpSetDrv.Location = new System.Drawing.Point(6, 163);
+            this.grpSetDrv.Name = "grpSetDrv";
+            this.grpSetDrv.Size = new System.Drawing.Size(598, 86);
+            this.grpSetDrv.TabIndex = 51;
+            this.grpSetDrv.TabStop = false;
+            this.grpSetDrv.Text = "Drive Settings";
+            // 
+            // lblDriveSel
+            // 
+            this.lblDriveSel.AutoSize = true;
+            this.lblDriveSel.Location = new System.Drawing.Point(14, 28);
+            this.lblDriveSel.Name = "lblDriveSel";
+            this.lblDriveSel.Size = new System.Drawing.Size(82, 13);
+            this.lblDriveSel.TabIndex = 40;
+            this.lblDriveSel.Text = "Drive Selection:";
+            // 
             // lblDriveDuty
             // 
             this.lblDriveDuty.AutoSize = true;
@@ -447,6 +471,17 @@
             this.lblDriveDuty.Size = new System.Drawing.Size(96, 13);
             this.lblDriveDuty.TabIndex = 49;
             this.lblDriveDuty.Text = "Drive Duty Setting:";
+            // 
+            // cmbParamGroup
+            // 
+            this.cmbParamGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbParamGroup.Enabled = false;
+            this.cmbParamGroup.FormattingEnabled = true;
+            this.cmbParamGroup.Location = new System.Drawing.Point(102, 52);
+            this.cmbParamGroup.Name = "cmbParamGroup";
+            this.cmbParamGroup.Size = new System.Drawing.Size(277, 21);
+            this.cmbParamGroup.TabIndex = 1;
+            this.cmbParamGroup.SelectedIndexChanged += new System.EventHandler(this.cmbParamGroup_SelectedIndexChanged);
             // 
             // cmbDriveDuty
             // 
@@ -462,14 +497,15 @@
             this.cmbDriveDuty.TabIndex = 48;
             this.cmbDriveDuty.SelectedIndexChanged += new System.EventHandler(this.cmbDriveDuty_SelectedIndexChanged);
             // 
-            // lblParamFullList
+            // cmbDrvList
             // 
-            this.lblParamFullList.AutoSize = true;
-            this.lblParamFullList.Location = new System.Drawing.Point(6, 252);
-            this.lblParamFullList.Name = "lblParamFullList";
-            this.lblParamFullList.Size = new System.Drawing.Size(96, 13);
-            this.lblParamFullList.TabIndex = 47;
-            this.lblParamFullList.Text = "Full Parameter List:";
+            this.cmbDrvList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDrvList.FormattingEnabled = true;
+            this.cmbDrvList.Location = new System.Drawing.Point(102, 25);
+            this.cmbDrvList.Name = "cmbDrvList";
+            this.cmbDrvList.Size = new System.Drawing.Size(277, 21);
+            this.cmbDrvList.TabIndex = 0;
+            this.cmbDrvList.SelectedIndexChanged += new System.EventHandler(this.cmbDriveSel_SelectedIndexChanged);
             // 
             // lblParamGroup
             // 
@@ -480,35 +516,187 @@
             this.lblParamGroup.TabIndex = 41;
             this.lblParamGroup.Text = "Parameter Group:";
             // 
-            // lblDriveSel
+            // grpSetMach
             // 
-            this.lblDriveSel.AutoSize = true;
-            this.lblDriveSel.Location = new System.Drawing.Point(14, 28);
-            this.lblDriveSel.Name = "lblDriveSel";
-            this.lblDriveSel.Size = new System.Drawing.Size(82, 13);
-            this.lblDriveSel.TabIndex = 40;
-            this.lblDriveSel.Text = "Drive Selection:";
+            this.grpSetMach.Controls.Add(this.txtMachDrvName);
+            this.grpSetMach.Controls.Add(this.label5);
+            this.grpSetMach.Controls.Add(this.txtMachChrtCnt);
+            this.grpSetMach.Controls.Add(this.label3);
+            this.grpSetMach.Controls.Add(this.txtMachDrvCnt);
+            this.grpSetMach.Controls.Add(this.btnMachListDel);
+            this.grpSetMach.Controls.Add(this.btnMachListLoad);
+            this.grpSetMach.Controls.Add(this.btnMachListStore);
+            this.grpSetMach.Controls.Add(this.cmbMachChrtNum);
+            this.grpSetMach.Controls.Add(this.label4);
+            this.grpSetMach.Controls.Add(this.label2);
+            this.grpSetMach.Controls.Add(this.cmbMachSel);
+            this.grpSetMach.Controls.Add(this.lblSelMach);
+            this.grpSetMach.Controls.Add(this.cmbMachDrvNum);
+            this.grpSetMach.Controls.Add(this.lblSelMotor);
+            this.grpSetMach.Location = new System.Drawing.Point(6, 19);
+            this.grpSetMach.Name = "grpSetMach";
+            this.grpSetMach.Size = new System.Drawing.Size(598, 138);
+            this.grpSetMach.TabIndex = 50;
+            this.grpSetMach.TabStop = false;
+            this.grpSetMach.Text = "Machine Settings";
             // 
-            // cmbDriveList
+            // txtMachDrvName
             // 
-            this.cmbDriveList.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDriveList.FormattingEnabled = true;
-            this.cmbDriveList.Location = new System.Drawing.Point(102, 25);
-            this.cmbDriveList.Name = "cmbDriveList";
-            this.cmbDriveList.Size = new System.Drawing.Size(277, 21);
-            this.cmbDriveList.TabIndex = 0;
-            this.cmbDriveList.SelectedIndexChanged += new System.EventHandler(this.cmbDriveSel_SelectedIndexChanged);
+            this.txtMachDrvName.Location = new System.Drawing.Point(433, 66);
+            this.txtMachDrvName.Name = "txtMachDrvName";
+            this.txtMachDrvName.ReadOnly = true;
+            this.txtMachDrvName.Size = new System.Drawing.Size(159, 20);
+            this.txtMachDrvName.TabIndex = 99;
             // 
-            // cmbParamGroup
+            // label5
             // 
-            this.cmbParamGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbParamGroup.Enabled = false;
-            this.cmbParamGroup.FormattingEnabled = true;
-            this.cmbParamGroup.Location = new System.Drawing.Point(102, 52);
-            this.cmbParamGroup.Name = "cmbParamGroup";
-            this.cmbParamGroup.Size = new System.Drawing.Size(277, 21);
-            this.cmbParamGroup.TabIndex = 1;
-            this.cmbParamGroup.SelectedIndexChanged += new System.EventHandler(this.cmbParamGroup_SelectedIndexChanged);
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(9, 68);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(66, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Chart Count:";
+            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtMachChrtCnt
+            // 
+            this.txtMachChrtCnt.Enabled = false;
+            this.txtMachChrtCnt.Location = new System.Drawing.Point(81, 66);
+            this.txtMachChrtCnt.Name = "txtMachChrtCnt";
+            this.txtMachChrtCnt.ReadOnly = true;
+            this.txtMachChrtCnt.Size = new System.Drawing.Size(23, 20);
+            this.txtMachChrtCnt.TabIndex = 98;
+            this.txtMachChrtCnt.TabStop = false;
+            this.txtMachChrtCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtMachChrtCnt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSlaveAddr_KeyDown);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(114, 67);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(66, 13);
+            this.label3.TabIndex = 14;
+            this.label3.Text = "Drive Count:";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // txtMachDrvCnt
+            // 
+            this.txtMachDrvCnt.Enabled = false;
+            this.txtMachDrvCnt.Location = new System.Drawing.Point(186, 66);
+            this.txtMachDrvCnt.Name = "txtMachDrvCnt";
+            this.txtMachDrvCnt.ReadOnly = true;
+            this.txtMachDrvCnt.Size = new System.Drawing.Size(23, 20);
+            this.txtMachDrvCnt.TabIndex = 98;
+            this.txtMachDrvCnt.TabStop = false;
+            this.txtMachDrvCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txtMachDrvCnt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSlaveAddr_KeyDown);
+            // 
+            // btnMachListDel
+            // 
+            this.btnMachListDel.Location = new System.Drawing.Point(205, 109);
+            this.btnMachListDel.Name = "btnMachListDel";
+            this.btnMachListDel.Size = new System.Drawing.Size(125, 23);
+            this.btnMachListDel.TabIndex = 65;
+            this.btnMachListDel.Text = "Delete Parameter List";
+            this.btnMachListDel.UseVisualStyleBackColor = true;
+            this.btnMachListDel.Click += new System.EventHandler(this.btnMachListDel_Click);
+            // 
+            // btnMachListLoad
+            // 
+            this.btnMachListLoad.Enabled = false;
+            this.btnMachListLoad.Location = new System.Drawing.Point(467, 109);
+            this.btnMachListLoad.Name = "btnMachListLoad";
+            this.btnMachListLoad.Size = new System.Drawing.Size(125, 23);
+            this.btnMachListLoad.TabIndex = 65;
+            this.btnMachListLoad.Text = "Load Parameter List";
+            this.btnMachListLoad.UseVisualStyleBackColor = true;
+            this.btnMachListLoad.Click += new System.EventHandler(this.btnMachLoad_Click);
+            // 
+            // btnMachListStore
+            // 
+            this.btnMachListStore.Location = new System.Drawing.Point(336, 109);
+            this.btnMachListStore.Name = "btnMachListStore";
+            this.btnMachListStore.Size = new System.Drawing.Size(125, 23);
+            this.btnMachListStore.TabIndex = 65;
+            this.btnMachListStore.Text = "Store Parameter List";
+            this.btnMachListStore.UseVisualStyleBackColor = true;
+            this.btnMachListStore.Click += new System.EventHandler(this.btnMachStore_Click);
+            // 
+            // cmbMachChrtNum
+            // 
+            this.cmbMachChrtNum.FormattingEnabled = true;
+            this.cmbMachChrtNum.Location = new System.Drawing.Point(495, 25);
+            this.cmbMachChrtNum.Name = "cmbMachChrtNum";
+            this.cmbMachChrtNum.Size = new System.Drawing.Size(97, 21);
+            this.cmbMachChrtNum.TabIndex = 63;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(392, 28);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(97, 13);
+            this.label4.TabIndex = 62;
+            this.label4.Text = "Chart Part Number:";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(366, 69);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(66, 13);
+            this.label2.TabIndex = 62;
+            this.label2.Text = "Drive Name:";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbMachSel
+            // 
+            this.cmbMachSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMachSel.FormattingEnabled = true;
+            this.cmbMachSel.Location = new System.Drawing.Point(110, 25);
+            this.cmbMachSel.Name = "cmbMachSel";
+            this.cmbMachSel.Size = new System.Drawing.Size(234, 21);
+            this.cmbMachSel.TabIndex = 63;
+            this.cmbMachSel.SelectedIndexChanged += new System.EventHandler(this.cmbSelMach_SelectedIndexChanged);
+            // 
+            // lblSelMach
+            // 
+            this.lblSelMach.AutoSize = true;
+            this.lblSelMach.Location = new System.Drawing.Point(6, 28);
+            this.lblSelMach.Name = "lblSelMach";
+            this.lblSelMach.Size = new System.Drawing.Size(98, 13);
+            this.lblSelMach.TabIndex = 62;
+            this.lblSelMach.Text = "Machine Selection:";
+            // 
+            // cmbMachDrvNum
+            // 
+            this.cmbMachDrvNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMachDrvNum.FormattingEnabled = true;
+            this.cmbMachDrvNum.Location = new System.Drawing.Point(302, 66);
+            this.cmbMachDrvNum.Name = "cmbMachDrvNum";
+            this.cmbMachDrvNum.Size = new System.Drawing.Size(42, 21);
+            this.cmbMachDrvNum.TabIndex = 64;
+            this.cmbMachDrvNum.SelectedIndexChanged += new System.EventHandler(this.cmbMachDrvNum_SelectedIndexChanged);
+            // 
+            // lblSelMotor
+            // 
+            this.lblSelMotor.AutoSize = true;
+            this.lblSelMotor.Location = new System.Drawing.Point(225, 69);
+            this.lblSelMotor.Name = "lblSelMotor";
+            this.lblSelMotor.Size = new System.Drawing.Size(75, 13);
+            this.lblSelMotor.TabIndex = 61;
+            this.lblSelMotor.Text = "Drive Number:";
+            // 
+            // lblParamFullList
+            // 
+            this.lblParamFullList.AutoSize = true;
+            this.lblParamFullList.Location = new System.Drawing.Point(6, 252);
+            this.lblParamFullList.Name = "lblParamFullList";
+            this.lblParamFullList.Size = new System.Drawing.Size(96, 13);
+            this.lblParamFullList.TabIndex = 47;
+            this.lblParamFullList.Text = "Full Parameter List:";
             // 
             // dgvParamViewMisMatch
             // 
@@ -966,34 +1154,6 @@
             this.lblMotorPartNum.TabIndex = 65;
             this.lblMotorPartNum.Text = "Motor Part Number:";
             // 
-            // cmbMachSel
-            // 
-            this.cmbMachSel.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMachSel.FormattingEnabled = true;
-            this.cmbMachSel.Location = new System.Drawing.Point(110, 25);
-            this.cmbMachSel.Name = "cmbMachSel";
-            this.cmbMachSel.Size = new System.Drawing.Size(234, 21);
-            this.cmbMachSel.TabIndex = 63;
-            this.cmbMachSel.SelectedIndexChanged += new System.EventHandler(this.cmbSelMach_SelectedIndexChanged);
-            // 
-            // lblSelMach
-            // 
-            this.lblSelMach.AutoSize = true;
-            this.lblSelMach.Location = new System.Drawing.Point(6, 28);
-            this.lblSelMach.Name = "lblSelMach";
-            this.lblSelMach.Size = new System.Drawing.Size(98, 13);
-            this.lblSelMach.TabIndex = 62;
-            this.lblSelMach.Text = "Machine Selection:";
-            // 
-            // lblSelMotor
-            // 
-            this.lblSelMotor.AutoSize = true;
-            this.lblSelMotor.Location = new System.Drawing.Point(225, 69);
-            this.lblSelMotor.Name = "lblSelMotor";
-            this.lblSelMotor.Size = new System.Drawing.Size(75, 13);
-            this.lblSelMotor.TabIndex = 61;
-            this.lblSelMotor.Text = "Drive Number:";
-            // 
             // bwrkVFDVerify
             // 
             this.bwrkVFDVerify.WorkerReportsProgress = true;
@@ -1047,167 +1207,6 @@
             this.btnMtrStore.UseVisualStyleBackColor = true;
             this.btnMtrStore.Click += new System.EventHandler(this.btnMtrStore_Click);
             // 
-            // grpSetMach
-            // 
-            this.grpSetMach.Controls.Add(this.txtMachDrvName);
-            this.grpSetMach.Controls.Add(this.label5);
-            this.grpSetMach.Controls.Add(this.txtMachChrtCnt);
-            this.grpSetMach.Controls.Add(this.label3);
-            this.grpSetMach.Controls.Add(this.txtMachDrvCnt);
-            this.grpSetMach.Controls.Add(this.btnMachListDel);
-            this.grpSetMach.Controls.Add(this.btnMachListLoad);
-            this.grpSetMach.Controls.Add(this.btnMachListStore);
-            this.grpSetMach.Controls.Add(this.cmbMachChrtNum);
-            this.grpSetMach.Controls.Add(this.label4);
-            this.grpSetMach.Controls.Add(this.label2);
-            this.grpSetMach.Controls.Add(this.cmbMachSel);
-            this.grpSetMach.Controls.Add(this.lblSelMach);
-            this.grpSetMach.Controls.Add(this.cmbMachDrvNum);
-            this.grpSetMach.Controls.Add(this.lblSelMotor);
-            this.grpSetMach.Enabled = false;
-            this.grpSetMach.Location = new System.Drawing.Point(6, 19);
-            this.grpSetMach.Name = "grpSetMach";
-            this.grpSetMach.Size = new System.Drawing.Size(598, 138);
-            this.grpSetMach.TabIndex = 50;
-            this.grpSetMach.TabStop = false;
-            this.grpSetMach.Text = "Machine Settings";
-            // 
-            // txtMachDrvName
-            // 
-            this.txtMachDrvName.Location = new System.Drawing.Point(433, 66);
-            this.txtMachDrvName.Name = "txtMachDrvName";
-            this.txtMachDrvName.ReadOnly = true;
-            this.txtMachDrvName.Size = new System.Drawing.Size(159, 20);
-            this.txtMachDrvName.TabIndex = 99;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(9, 68);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(66, 13);
-            this.label5.TabIndex = 14;
-            this.label5.Text = "Chart Count:";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtMachChrtCnt
-            // 
-            this.txtMachChrtCnt.Enabled = false;
-            this.txtMachChrtCnt.Location = new System.Drawing.Point(81, 66);
-            this.txtMachChrtCnt.Name = "txtMachChrtCnt";
-            this.txtMachChrtCnt.ReadOnly = true;
-            this.txtMachChrtCnt.Size = new System.Drawing.Size(23, 20);
-            this.txtMachChrtCnt.TabIndex = 98;
-            this.txtMachChrtCnt.TabStop = false;
-            this.txtMachChrtCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtMachChrtCnt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSlaveAddr_KeyDown);
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(114, 67);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(66, 13);
-            this.label3.TabIndex = 14;
-            this.label3.Text = "Drive Count:";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtMachDrvCnt
-            // 
-            this.txtMachDrvCnt.Enabled = false;
-            this.txtMachDrvCnt.Location = new System.Drawing.Point(186, 66);
-            this.txtMachDrvCnt.Name = "txtMachDrvCnt";
-            this.txtMachDrvCnt.ReadOnly = true;
-            this.txtMachDrvCnt.Size = new System.Drawing.Size(23, 20);
-            this.txtMachDrvCnt.TabIndex = 98;
-            this.txtMachDrvCnt.TabStop = false;
-            this.txtMachDrvCnt.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.txtMachDrvCnt.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSlaveAddr_KeyDown);
-            // 
-            // btnMachListDel
-            // 
-            this.btnMachListDel.Location = new System.Drawing.Point(205, 109);
-            this.btnMachListDel.Name = "btnMachListDel";
-            this.btnMachListDel.Size = new System.Drawing.Size(125, 23);
-            this.btnMachListDel.TabIndex = 65;
-            this.btnMachListDel.Text = "Delete Parameter List";
-            this.btnMachListDel.UseVisualStyleBackColor = true;
-            this.btnMachListDel.Click += new System.EventHandler(this.btnMachListDel_Click);
-            // 
-            // btnMachListLoad
-            // 
-            this.btnMachListLoad.Enabled = false;
-            this.btnMachListLoad.Location = new System.Drawing.Point(467, 109);
-            this.btnMachListLoad.Name = "btnMachListLoad";
-            this.btnMachListLoad.Size = new System.Drawing.Size(125, 23);
-            this.btnMachListLoad.TabIndex = 65;
-            this.btnMachListLoad.Text = "Load Parameter List";
-            this.btnMachListLoad.UseVisualStyleBackColor = true;
-            this.btnMachListLoad.Click += new System.EventHandler(this.btnMachLoad_Click);
-            // 
-            // btnMachListStore
-            // 
-            this.btnMachListStore.Location = new System.Drawing.Point(336, 109);
-            this.btnMachListStore.Name = "btnMachListStore";
-            this.btnMachListStore.Size = new System.Drawing.Size(125, 23);
-            this.btnMachListStore.TabIndex = 65;
-            this.btnMachListStore.Text = "Store Parameter List";
-            this.btnMachListStore.UseVisualStyleBackColor = true;
-            this.btnMachListStore.Click += new System.EventHandler(this.btnMachStore_Click);
-            // 
-            // cmbMachChrtNum
-            // 
-            this.cmbMachChrtNum.FormattingEnabled = true;
-            this.cmbMachChrtNum.Location = new System.Drawing.Point(495, 25);
-            this.cmbMachChrtNum.Name = "cmbMachChrtNum";
-            this.cmbMachChrtNum.Size = new System.Drawing.Size(97, 21);
-            this.cmbMachChrtNum.TabIndex = 63;
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(392, 28);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(97, 13);
-            this.label4.TabIndex = 62;
-            this.label4.Text = "Chart Part Number:";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(366, 69);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 13);
-            this.label2.TabIndex = 62;
-            this.label2.Text = "Drive Name:";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cmbMachDrvNum
-            // 
-            this.cmbMachDrvNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMachDrvNum.FormattingEnabled = true;
-            this.cmbMachDrvNum.Location = new System.Drawing.Point(302, 66);
-            this.cmbMachDrvNum.Name = "cmbMachDrvNum";
-            this.cmbMachDrvNum.Size = new System.Drawing.Size(42, 21);
-            this.cmbMachDrvNum.TabIndex = 64;
-            this.cmbMachDrvNum.SelectedIndexChanged += new System.EventHandler(this.cmbMachDrvNum_SelectedIndexChanged);
-            // 
-            // grpSetDrv
-            // 
-            this.grpSetDrv.Controls.Add(this.lblDriveSel);
-            this.grpSetDrv.Controls.Add(this.lblDriveDuty);
-            this.grpSetDrv.Controls.Add(this.cmbParamGroup);
-            this.grpSetDrv.Controls.Add(this.cmbDriveDuty);
-            this.grpSetDrv.Controls.Add(this.cmbDriveList);
-            this.grpSetDrv.Controls.Add(this.lblParamGroup);
-            this.grpSetDrv.Location = new System.Drawing.Point(6, 163);
-            this.grpSetDrv.Name = "grpSetDrv";
-            this.grpSetDrv.Size = new System.Drawing.Size(598, 86);
-            this.grpSetDrv.TabIndex = 51;
-            this.grpSetDrv.TabStop = false;
-            this.grpSetDrv.Text = "Drive Settings";
-            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1235,6 +1234,10 @@
             this.ctxtDriveMod.ResumeLayout(false);
             this.grpSetDrive.ResumeLayout(false);
             this.grpSetDrive.PerformLayout();
+            this.grpSetDrv.ResumeLayout(false);
+            this.grpSetDrv.PerformLayout();
+            this.grpSetMach.ResumeLayout(false);
+            this.grpSetMach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewMisMatch)).EndInit();
             this.groupBox4.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
@@ -1244,10 +1247,6 @@
             this.grpParamChng.PerformLayout();
             this.grpSetMotor.ResumeLayout(false);
             this.grpSetMotor.PerformLayout();
-            this.grpSetMach.ResumeLayout(false);
-            this.grpSetMach.PerformLayout();
-            this.grpSetDrv.ResumeLayout(false);
-            this.grpSetDrv.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1273,7 +1272,7 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnVFDReset;
         private System.Windows.Forms.Button btnVFDVer;
-        private System.Windows.Forms.ComboBox cmbDriveList;
+        private System.Windows.Forms.ComboBox cmbDrvList;
         private System.Windows.Forms.Label lblParamGroup;
         private System.Windows.Forms.Label lblDriveSel;
         private System.Windows.Forms.MenuStrip menuStrip1;

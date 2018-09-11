@@ -14,11 +14,13 @@ using System.IO;
 using System.Data.SqlClient;
 using System.Data.OleDb;
 using XL = Microsoft.Office.Interop.Excel;
-using V1000_Drive_Programmer;
+using V1000_Prog_SQL;
 using ModbusRTU;
 using V1000_ModbusRTU;
+using dBFunc;
+using GenFunc;
 
-namespace V1000_Drive_Programmer
+namespace V1000_Prog_SQL
 {
     public partial class frmMain : Form
     {
@@ -32,22 +34,27 @@ namespace V1000_Drive_Programmer
         //const string DataDir = "C:\\Users\\sferry\\source\\repos\\V1000_Drive_Programmer\\V1000_Drive_Programmer\\data\\";
         //const string DataDir = "C:\\Users\\sferry\\desktop\\data\\";
 
+        const string UL_Srv = "ULSQL12T";
+        const string UL_dB = "ElectricalApps";
+
+        SqlConnection dBConn = new SqlConnection();
+
         const string OLEBaseStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source='";
         const string OLEEndStr = "';Extended Properties='Excel 12.0 XML;HDR=YES;';";
         const string dbFileExt = ".XLSX";
 
         // Urschel Electrical Databases
-        const string dBVFD = "DRIVE_LIST";
+        //const string dBVFD = "DRIVE_LIST";
         const string dBMachine = "MACH_DATA";
         const string dBMotor = "MOTOR_DATA";
         const string dBChart = "CHART_LIST";
 
         const string dBChartExt = "_CHARTS";
 
-        DataTable dtDriveList = new DataTable();
-        DataTable dtParamGrpDesc = new DataTable();
-        DataTable dtParamListND = new DataTable();
-        DataTable dtParamListHD = new DataTable();
+        //DataTable dtDriveList = new DataTable();
+        //DataTable dtParamGrpDesc = new DataTable();
+        //DataTable dtParamListND = new DataTable();
+        //DataTable dtParamListHD = new DataTable();
 
         // VFD status and communication variables
         uint VFDReadRegCnt = 0;
@@ -75,6 +82,10 @@ namespace V1000_Drive_Programmer
         List<V1000_Param_Data> Param_Chng = new List<V1000_Param_Data>();
         List<V1000_Param_Data> Param_Vrfy = new List<V1000_Param_Data>();
 
+        List<V1000_Param_Data> Param_List_SQL = new List<V1000_Param_Data>();
+        List<VFDInfo> DrvInf = new List<VFDInfo>();
+        List<ParamGrpInfo> GrpInf = new List<ParamGrpInfo>();
+
         // Background Worker status 
         ThreadProgressArgs ProgressArgs = new ThreadProgressArgs();
 
@@ -95,13 +106,22 @@ namespace V1000_Drive_Programmer
             txtSlaveAddr.Text = "0x1F";
             txtSlaveAddr.SelectionLength = 0;
 
+            // Open Database
+            if(!dB.Open(ref dBConn, UL_Srv, UL_dB, false, "ElecTest", "ElecTest"))
+            {
+                MsgBox.Err("Unable to open Database!", "Program Error");
+                this.Close();
+            }
+
+            cmbDriveDuty.SelectedIndex = 1;
+
             LoadCommComboBoxes();
-            LoadParamComboboxes();
+            LoadDriveList();
             LoadMtrPartNums();
             LoadMachComboboxes();
 
             SetVFDCommBtnEnable(0x00);
-            cmbDriveList.Focus();
+            cmbDrvList.Focus();
 
             // In order to protect the database, and rather than using a password, if the
             // Store and Delete Parameter List buttons aren't visible, don't allow
@@ -124,6 +144,8 @@ namespace V1000_Drive_Programmer
         {
             if (spVFD.IsOpen)
                 spVFD.Close();
+
+            dB.Close(ref dBConn);
         }
 
         #endregion
@@ -141,34 +163,43 @@ namespace V1000_Drive_Programmer
 
         private void cmbDriveSel_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DataRow row = dtDriveList.Rows[cmbDriveList.SelectedIndex];
-
-            if (GetParamList(row, "PARAM_ND_LIST", ref dtParamListND, ref Param_List_ND))
-            {
-                SetDriveParamConsts(VFD_V1000);
-                if (row["PARAM_HD_LIST"].ToString() != "")
-                {
-                    GetParamList(row, "PARAM_HD_LIST", ref dtParamListHD, ref Param_List_HD);
-                }
-            }
+            // Get the drive info
+            string drv_num = DrvInf[cmbDrvList.SelectedIndex].Info.PartNum;
+            string drv_fam = DrvInf[cmbDrvList.SelectedIndex].DrvFam;
             
-            if (Param_List_HD.Count > 0)
-            {
-                cmbDriveDuty.SelectedIndex = 1;
-                cmbDriveDuty.Enabled = true;
-            }
+            // get the table for the parameter information
+            string param_tbl = DrvInf[cmbDrvList.SelectedIndex].ParamTbl;
+            string grp_tbl = DrvInf[cmbDrvList.SelectedIndex].GrpDescTbl;
+
+            // Setup the drive default values column
+            string duty;
+            if(cmbDriveDuty.SelectedIndex == 0)
+                duty = "ND";
             else
-            {
-                cmbDriveDuty.SelectedIndex = 0;
-                cmbDriveDuty.Enabled = false;
-            }
+                duty = "HD";
+            string param_col = "DEF_" + drv_num + "_" + duty;
 
-            RefreshParamViews();
+            // Get the parameter list
+            DataTable tbl = new DataTable();
+            string cols = "REG_ADDR, PARAM_NUM, PARAM_NAME, MULTIPLIER, NUM_BASE, UNITS, " + param_col;
+            dB.Query(ref dBConn, ref tbl, param_tbl, cols, p_OrderBy:"PARAM_NUM");
+            GetParamListSQL(tbl, ref Param_List);
+            SetDriveParamConsts(drv_fam);
 
-            if (GetParamGrpList(row, "PARAM_GRP_DESC", ref dtParamGrpDesc) && (cmbParamGroup.Items.Count > 0))
+            // Get the parameter grouping list
+            GrpInf.Clear();
+            tbl.Dispose();
+            tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, grp_tbl, "*", p_OrderBy:"DRV_GRP");
+            foreach(DataRow dr in tbl.Rows)
             {
-                cmbParamGroup.Enabled = true;
-                cmbParamGroup.SelectedIndex = 0;
+                ParamGrpInfo inf = new ParamGrpInfo();
+                inf.GrpID = dr["DRV_GRP"].ToString();
+                inf.GrpDesc = dr["DRV_GRP_DESC"].ToString();
+                inf.IDX = Convert.ToUInt16(dr["DRV_LIST_IDX"].ToString());
+
+                GrpInf.Add(inf);
+                cmbParamGroup.Items.Add(string.Format("{0} - {1}", inf.GrpID, inf.GrpDesc));
             }
 
             // Enable buttons, comboboxes, and text boxes after reading all the drive setting information
@@ -177,27 +208,48 @@ namespace V1000_Drive_Programmer
                 SetVFDCommBtnEnable(0x03);  // Turn on the VFD communication buttons
             }
 
+            RefreshParamViews();
+            cmbParamGroup.Enabled = true;
+            cmbParamGroup.SelectedIndex = 0;
+            cmbDriveDuty.Enabled = true;
             msFile_LoadParamList.Enabled = true;                // Allow a parameter update spreadsheet to be loaded
             grpSetMotor.Enabled = true;
             grpSetMach.Enabled = true;
         }
 
+        private void GetParamListSQL(DataTable p_Tbl, ref List<V1000_Param_Data> p_List)
+        {
+            p_List.Clear();
+            foreach(DataRow dr in p_Tbl.Rows)
+            {
+                V1000_Param_Data data = new V1000_Param_Data();
+                data.RegAddress = Convert.ToUInt16(dr[0].ToString());
+                data.ParamNum = dr[1].ToString();
+                data.ParamName = dr[2].ToString();
+                data.Multiplier = Convert.ToUInt16(dr[3].ToString());
+                data.NumBase = Convert.ToByte(dr[4].ToString());
+                data.Units = dr[5].ToString();
+                data.DefVal = Convert.ToUInt16(dr[6].ToString());
+
+                p_List.Add(data);
+            }
+        }
+
         private void cmbDriveDuty_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Set the Param_List list object to point to the appropriate list based on the drive duty selection
-            if (cmbDriveDuty.SelectedIndex == 0)
+            if(cmbDriveDuty.SelectedIndex == 0)
                 Param_List = Param_List_ND;
             else
                 Param_List = Param_List_HD;
 
             if(dgvParamViewFull.Rows.Count > 0)
-                RefreshParamViews();    // Refresh the Full Parameter List datagridview
+                cmbDriveSel_SelectedIndexChanged(sender, e);
         }
 
         private void cmbParamGroup_SelectedIndexChanged(object sender, EventArgs e)
         {
-            DataRow row = dtParamGrpDesc.Rows[cmbParamGroup.SelectedIndex];
-            int index = Convert.ToInt16(row["LIST_IDX"].ToString());
+            int index = GrpInf[cmbParamGroup.SelectedIndex].IDX;
 
             dgvParamViewFull.ClearSelection();
             dgvParamViewFull.Rows[index].Selected = true;
@@ -222,22 +274,31 @@ namespace V1000_Drive_Programmer
             {
                 string msg = "No communication port detected, would you like to continue without drive programming functionality?";
                 string caption = "Communication Port Error";
-                if(YNMsgBox(msg, caption) == DialogResult.No)
+                if(MsgBox.YN(msg, caption) == DialogResult.No)
                     this.Close();
-
             }
         }
 
-        public void LoadParamComboboxes()
+        public void LoadDriveList()
         {
-            // Get the list of VFDs available and fill the drive list combo box.
-            if(dB_Query(dBVFD, "SELECT * FROM [Sheet1$]", ref dtDriveList) > 0)
+            DataTable tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, "DRV_LIST", "*", p_OrderBy:"DRV_NUM");
+            
+            foreach(DataRow dr in tbl.Rows)
             {
-                foreach(DataRow dr in dtDriveList.Rows)
-                {
-                    string str = dr["UL_PARTNUM"].ToString() + " - " + dr["UL_DESC"].ToString();
-                    cmbDriveList.Items.Add(str);
-                }
+                VFDInfo inf = new VFDInfo();
+                inf.Info.PartNum = dr["DRV_NUM"].ToString();
+                inf.Info.PartDesc = dr["DRV_DESC"].ToString();
+                inf.Info.Mfr = dr["DRV_MFR"].ToString();
+                inf.Info.MfrNum = dr["DRV_MFR_NUM"].ToString();
+                inf.DrvFam = dr["DRV_FAM"].ToString();
+                inf.ParamTbl = dr["DRV_PARAM_LIST"].ToString();
+                inf.GrpDescTbl = dr["DRV_GRP_DESC"].ToString();
+                    
+                string cmb_item = string.Format("{0} - {1}", inf.Info.PartNum, inf.Info.PartDesc);
+                cmbDrvList.Items.Add(cmb_item);
+
+                DrvInf.Add(inf);
             }
         }
 
@@ -267,8 +328,8 @@ namespace V1000_Drive_Programmer
                     cmbDriveSel_SelectedIndexChanged(sender, e);
                     btnVFDRead.Focus();
                 }
-                else if (cmbDriveList.SelectedIndex == -1)
-                    cmbDriveList.Focus();
+                else if (cmbDrvList.SelectedIndex == -1)
+                    cmbDrvList.Focus();
                 else
                     cmbDriveSel_SelectedIndexChanged(sender, e);
 
@@ -523,7 +584,7 @@ namespace V1000_Drive_Programmer
                 {
                     string msg = "The motor setup parameters have not been entered, do you wish to continue without setting up the motor parameters?";
                     string cap = "Motor Entry Missing";
-                    if(YNMsgBox(msg, cap) == DialogResult.No)
+                    if(MsgBox.YN(msg, cap) == DialogResult.No)
                         return;
                 }
 
@@ -1460,6 +1521,16 @@ namespace V1000_Drive_Programmer
             }
         }
 
+        public void SetDriveParamConsts(string p_DrvFam)
+        {
+            switch(p_DrvFam)
+            {
+                case "V1000":
+                    SetDriveParamConsts(VFD_V1000);
+                    break;
+            }
+        }
+
         #endregion
 
         #region Machine Specific Functions
@@ -1476,11 +1547,21 @@ namespace V1000_Drive_Programmer
 
         private void cmbSelMach_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // First clear all machine entry items strip off the machine code from the combo box
             MachSelReset();
-            string mach_code = GetMachCode(cmbMachSel.SelectedItem);    // First strip off the machine code from the combo box
+            string mach_code = GetMachCodeSQL(cmbMachSel.SelectedItem);    
 
             // next query the database for the number of VFDs the machine selection has
             DataTable tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, "MACH_DATA", "*", "MACH_CODE", mach_code);
+            int drv_cnt = Convert.ToInt32(tbl.Rows[0]["DRV_CNT"].ToString());
+            txtMachDrvCnt.Text = drv_cnt.ToString();
+
+            // Populate drive selection comboboxes with drive selection options
+            for(int i=0;i<drv_cnt;i++)
+                cmbMachDrvNum.Items.Add((i + 1).ToString());
+            cmbMachDrvNum.SelectedIndex = 0;
+            /*
             string query = "Select * FROM [Sheet1$] WHERE MACH_CODE Like '" + mach_code + "'";
             if (dB_Query(dBMachine, query, ref tbl) > 0)
             {
@@ -1504,15 +1585,20 @@ namespace V1000_Drive_Programmer
                 btnMachListDel.Enabled = true;
                 btnMachListStore.Enabled = true;
             }
+            */
         }
 
         private void cmbMachDrvNum_SelectedIndexChanged(object sender, EventArgs e)
         {
             DataTable tbl = new DataTable();
             
+            // Form column name for stored drive name in the database
             string drv_col_name = "DRV" + cmbMachDrvNum.GetItemText(cmbMachDrvNum.SelectedItem) + "_NAME";
-            string mach_code = GetMachCode(cmbMachSel.SelectedItem);
-            dB_Query(dBMachine, ref tbl, drv_col_name, "MACH_CODE", mach_code); 
+            
+            // Form the machine code for searching in the database
+            string mach_code = GetMachCodeSQL(cmbMachSel.SelectedItem);
+
+            dB.Query(ref dBConn, ref tbl, "MACH_DATA", drv_col_name, "MACH_CODE", mach_code);
             txtMachDrvName.Text = tbl.Rows[0][0].ToString();
         }
 
@@ -1520,14 +1606,14 @@ namespace V1000_Drive_Programmer
         {
             if(cmbMachSel.SelectedIndex < 0)
             {
-                ErrorMsgBox("No machine selected!");
+                MsgBox.Err("No machine selected!");
                 return;
             }
 
             // First make sure that all the machine data is filled in
             if((cmbMachChrtNum.Text == "") || (cmbMachDrvNum.Text == ""))
             {
-                ErrorMsgBox("Loading a machine VFD parameter chart requires a chart number and drive number selection!");
+                MsgBox.Err("Loading a machine VFD parameter chart requires a chart number and drive number selection!");
                 return;
             }
 
@@ -1559,13 +1645,13 @@ namespace V1000_Drive_Programmer
                 else
                 {
                     string msg = "The drive constants for the " + txtMachDrvName.Text + " VFD in the " + cmbMachChrtNum.Text + " parameter chart do not exist in the system!";
-                    ErrorMsgBox(msg, "Parameter Chart Load Error");
+                    MsgBox.Err(msg, "Parameter Chart Load Error");
                     return;
                 }
             }
             else
             {
-                ErrorMsgBox("No charts exist for this machine!", "Chart Listing Error!");
+                MsgBox.Err("No charts exist for this machine!", "Chart Listing Error!");
                 return;
             }
         }
@@ -1574,21 +1660,21 @@ namespace V1000_Drive_Programmer
         {
             if (cmbMachSel.SelectedIndex < 0)
             {
-                ErrorMsgBox("No machine selected!");
+                MsgBox.Err("No machine selected!");
                 return;
             }
 
             // First make sure that all the machine data is filled in
             if((cmbMachChrtNum.Text == "") || (cmbMachDrvNum.Text == ""))
             {
-                ErrorMsgBox("Storing a machine VFD parameter chart requires information filled out!");
+                MsgBox.Err("Storing a machine VFD parameter chart requires information filled out!");
                 return;
             }
             
             // Next make sure that there are even parameters to save
             if(Param_Chng.Count < 1)
             {
-                ErrorMsgBox("No parameters to store!!");
+                MsgBox.Err("No parameters to store!!");
                 return;
             }
             
@@ -1612,7 +1698,7 @@ namespace V1000_Drive_Programmer
             string chart_num_drive = chart_num + "_" + cmbMachDrvNum.Text;
             if(dB_Query(chart_db, ref tbl, "*", "CHRT_NUM", chart_num_drive) > 0)
             {
-                if(YNMsgBox("This chart already exists, do you wish to overwrite", "VFD Chart Overwrite") == DialogResult.No)
+                if(MsgBox.YN("This chart already exists, do you wish to overwrite", "VFD Chart Overwrite") == DialogResult.No)
                     return;
 
                 // Delete the entry for the chart from the machine specific chart list
@@ -1640,14 +1726,14 @@ namespace V1000_Drive_Programmer
 
             UpdateMachChrtInfo();
 
-            InfoMsgBox("Parameter chart was successfully stored.");
+            MsgBox.Info("Parameter chart was successfully stored.");
         }
 
         private void btnMachListDel_Click(object sender, EventArgs e)
         {
             if((cmbMachSel.SelectedIndex == -1) || (cmbMachChrtNum.Text == ""))
             {
-                ErrorMsgBox("No valid machine and/or chart selection!");
+                MsgBox.Err("No valid machine and/or chart selection!");
                 return;
             }
 
@@ -1661,7 +1747,7 @@ namespace V1000_Drive_Programmer
             int chart_cnt = Convert.ToInt32(tbl.Rows[0][0].ToString());
             if(chart_cnt < 1)
             {
-                ErrorMsgBox("No parameter charts are stored for this machine!", "Chart Delete Error");
+                MsgBox.Err("No parameter charts are stored for this machine!", "Chart Delete Error");
                 return;
             }
 
@@ -1673,12 +1759,12 @@ namespace V1000_Drive_Programmer
             if(dB_Query(mach_charts, ref tbl, "*", "CHRT_NUM", chart_num_drive) == 0)
             {
                 string err_msg = "This specific chart number for drive number " + cmbMachDrvNum.Text + " does not exist in the list of charts associated with the " + mach_code + " machine!";
-                ErrorMsgBox(err_msg, "Chart Delete Error");
+                MsgBox.Err(err_msg, "Chart Delete Error");
                 return;
             }
 
             // Make sure the user is aware the delete operation is permenant 
-            if(YNMsgBox("Deleting this chart is permanent, do you wish to continue", "Confirm Parameter Chart Delete") == DialogResult.No)
+            if(MsgBox.YN("Deleting this chart is permanent, do you wish to continue", "Confirm Parameter Chart Delete") == DialogResult.No)
                 return;
 
             // Delete the chart file
@@ -1694,7 +1780,7 @@ namespace V1000_Drive_Programmer
             if(chart_cnt < 1)
                 dB_Drop(mach_charts);
 
-            InfoMsgBox("Parameter chart was successfully deleted.");
+            MsgBox.Info("Parameter chart was successfully deleted.");
 
         }
 
@@ -1703,6 +1789,15 @@ namespace V1000_Drive_Programmer
             string str = p_cmbItem.ToString();
             int idx = str.IndexOf(' ');
             string mach_code = str.Substring(0, idx);
+
+            return mach_code;
+        }
+
+        private string GetMachCodeSQL(object p_cmbItem)
+        {
+            string str = p_cmbItem.ToString();
+            int idx = str.IndexOf(' ');
+            string mach_code = string.Format("'{0}'", str.Substring(0, idx));
 
             return mach_code;
         }
@@ -1815,6 +1910,7 @@ namespace V1000_Drive_Programmer
         // Load list of machine codes with their description
         public void LoadMachComboboxes()
         {
+            /*
             DataTable tbl = new DataTable();
             if(dB_Query(dBMachine, "SELECT MACH_CODE, MACH_DESC FROM [Sheet1$]", ref tbl) > 0)
             {
@@ -1823,6 +1919,15 @@ namespace V1000_Drive_Programmer
                     string str = dr[0].ToString() + " - " + dr[1].ToString();
                     cmbMachSel.Items.Add(str);
                 }
+            }
+            */
+            DataTable tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, "MACH_DATA", "MACH_CODE, MACH_DESC", p_OrderBy:"MACH_CODE");
+
+            foreach(DataRow dr in tbl.Rows)
+            {
+                string cmb_item = string.Format("{0} - {1}", dr["MACH_CODE"].ToString(), dr["MACH_DESC"].ToString());
+                cmbMachSel.Items.Add(cmb_item);
             }
         }
 
@@ -1950,19 +2055,19 @@ namespace V1000_Drive_Programmer
         {
             if((cmbMtrVoltSupply.SelectedIndex == -1) || (cmbMtrFreqSupply.SelectedIndex == -1))
             {
-                ErrorMsgBox("Storing motor values requires a setting for supply voltage and supply frequency!");
+                MsgBox.Err("Storing motor values requires a setting for supply voltage and supply frequency!");
                 return;
             }
 
             if(cmbMtrPartNum.Text == "")
             {
-                ErrorMsgBox("Storing motor values requires an Urschel assigned motor part number!");
+                MsgBox.Err("Storing motor values requires an Urschel assigned motor part number!");
                 return;
             }
 
             if(txtMtrFLC.Text == "")
             {
-                ErrorMsgBox("Storing motor values requires a full load current entry!");
+                MsgBox.Err("Storing motor values requires a full load current entry!");
                 return;
             }
 
@@ -1971,7 +2076,7 @@ namespace V1000_Drive_Programmer
             DataTable tbl = new DataTable();
             if(dB_Query(dBMotor, ref tbl, "*", "MOTOR_PARTNUM", motor_num) < 1)
             {
-                if(YNMsgBox("Motor part number " + motor_num + " does not exist in the database, would you like to add?", "Motor Does Not Exist") == DialogResult.Yes)
+                if(MsgBox.YN("Motor part number " + motor_num + " does not exist in the database, would you like to add?", "Motor Does Not Exist") == DialogResult.Yes)
                 {
                     // Get the index number of the last entry in the database
                     dB_Query(dBMotor, ref tbl, "*", "IDX");
@@ -1998,7 +2103,7 @@ namespace V1000_Drive_Programmer
                 string cap = "A FLC value already exists for motor part number " + motor_num +
                              " at a voltage of " + cmbMtrVoltSupply.Text + "AC @ " + cmbMtrFreqSupply.Text +
                              " Hz.\nDo you wish to overwrite this value?";
-                if(YNMsgBox(cap, "FLC Overwrite") == DialogResult.No)
+                if(MsgBox.YN(cap, "FLC Overwrite") == DialogResult.No)
                     return;
             }
 
@@ -2010,28 +2115,29 @@ namespace V1000_Drive_Programmer
         {
             if(cmbMtrPartNum.Text == "")
             {
-                ErrorMsgBox("A motor part number is required to delete any record information!");
+                MsgBox.Err("A motor part number is required to delete any record information!");
                 return;
             }
 
             string motor_num = cmbMtrPartNum.Text;
 
-            if(YNMsgBox("Would you like to erase the entire motor information from the database?", "Motor Erase Option") == DialogResult.Yes)
+            if(MsgBox.YN("Would you like to erase the entire motor information from the database?", "Motor Erase Option") == DialogResult.Yes)
             {
                 if(dB_Delete(dBMotor, "MOTOR_PARTNUM", motor_num))
                 {
-                    InfoMsgBox("Motor part successfully deleted");
+                    MsgBox.Info("Motor part successfully deleted");
                     cmbMtrPartNum.Text = "";
                     LoadMtrPartNums();
                 }
                 else
-                    ErrorMsgBox("Motor part number entry does not exist in the database!");
+                    MsgBox.Err("Motor part number entry does not exist in the database!");
             }
         }
 
         // load the list of motors 
         public void LoadMtrPartNums()
         {
+            /*
             DataTable tbl = new DataTable();
             if(dB_Query(dBMotor, "SELECT MOTOR_PARTNUM FROM [Sheet1$] ORDER BY MOTOR_PARTNUM ASC", ref tbl) > 0)
             {
@@ -2041,6 +2147,15 @@ namespace V1000_Drive_Programmer
                     cmbMtrPartNum.Items.Add(dr[0].ToString());
                 }
             }
+            */
+
+            DataTable tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, "MTR_DATA", "MTR_NUM", p_OrderBy:"MTR_NUM");
+            foreach(DataRow dr in tbl.Rows)
+            {
+                cmbMtrPartNum.Items.Add((string)dr["MTR_NUM"]);
+            }
+
         }
 
         private string BuildMtrColID()
@@ -2053,29 +2168,6 @@ namespace V1000_Drive_Programmer
         }
 
         #endregion
-
-        #region MessageBox Shortcuts
-
-        DialogResult ErrorMsgBox(string p_Msg, string p_Caption = "Entry Error")
-        {
-            DialogResult result = MessageBox.Show(p_Msg, p_Caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
-            return result;
-        }
-
-        DialogResult YNMsgBox(string p_Msg, string p_Caption = "")
-        {
-            DialogResult result = MessageBox.Show(p_Msg, p_Caption, MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            return result;
-        }
-
-        DialogResult InfoMsgBox(string p_Msg, string p_Caption = "Information")
-        {
-            DialogResult result = MessageBox.Show(p_Msg, p_Caption, MessageBoxButtons.OK, MessageBoxIcon.Information);
-            return result;
-        }
-
-        #endregion
-        
         
     }
 
@@ -2165,5 +2257,45 @@ namespace V1000_Drive_Programmer
             VFDVer_Progress = 0;
             VFDVer_ParamMismatch_Cnt = 0;
         }
+    } // Class ThreadProgressArgs
+
+    public class VFDInfo
+    {
+        public PartInfo Info = new PartInfo();
+        public string DrvFam;
+        public string ParamTbl;
+        public string GrpDescTbl;
+
+        public VFDInfo()
+        {
+            Info.Clear();
+            DrvFam = "";
+            ParamTbl = "";
+            GrpDescTbl = "";
+        }
+
+        public void Clear()
+        {
+            Info.Clear();
+            DrvFam = "";
+            ParamTbl = "";
+            GrpDescTbl = "";
+        }
     }
-}
+
+    public class ParamGrpInfo
+    {
+        public string GrpID;
+        public string GrpDesc;
+        public int IDX; 
+
+        public void Clear()
+        {
+            GrpID = "";
+            GrpDesc = "";
+            IDX = 0;
+        }
+
+    }
+
+} // Namespace V1000_Prog_SQL

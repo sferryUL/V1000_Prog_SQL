@@ -64,9 +64,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="dBFunc.cs" />
     <Compile Include="dB_Func.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="GenFunc.cs" />
     <Compile Include="Urschel.cs" />
     <Compile Include="V1000_ModbusRTU.cs" />
     <Compile Include="ModbusRTU.cs" />

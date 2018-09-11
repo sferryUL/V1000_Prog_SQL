@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace V1000_Drive_Programmer
+namespace V1000_Prog_SQL
 {
     static class Program
     {
