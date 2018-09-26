@@ -121,8 +121,6 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lblParamChngSrc = new System.Windows.Forms.Label();
-            this.txtParamChngSrc = new System.Windows.Forms.TextBox();
             this.lblVoltMachSupply = new System.Windows.Forms.Label();
             this.cmbMtrVoltSupply = new System.Windows.Forms.ComboBox();
             this.lblVoltMotorMax = new System.Windows.Forms.Label();
@@ -594,6 +592,7 @@
             // 
             // btnMachListDel
             // 
+            this.btnMachListDel.Enabled = false;
             this.btnMachListDel.Location = new System.Drawing.Point(205, 109);
             this.btnMachListDel.Name = "btnMachListDel";
             this.btnMachListDel.Size = new System.Drawing.Size(125, 23);
@@ -615,6 +614,7 @@
             // 
             // btnMachListStore
             // 
+            this.btnMachListStore.Enabled = false;
             this.btnMachListStore.Location = new System.Drawing.Point(336, 109);
             this.btnMachListStore.Name = "btnMachListStore";
             this.btnMachListStore.Size = new System.Drawing.Size(125, 23);
@@ -968,23 +968,6 @@
             this.dataGridViewTextBoxColumn5.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.dataGridViewTextBoxColumn5.Width = 70;
             // 
-            // lblParamChngSrc
-            // 
-            this.lblParamChngSrc.AutoSize = true;
-            this.lblParamChngSrc.Location = new System.Drawing.Point(461, 28);
-            this.lblParamChngSrc.Name = "lblParamChngSrc";
-            this.lblParamChngSrc.Size = new System.Drawing.Size(44, 13);
-            this.lblParamChngSrc.TabIndex = 44;
-            this.lblParamChngSrc.Text = "Source:";
-            // 
-            // txtParamChngSrc
-            // 
-            this.txtParamChngSrc.Location = new System.Drawing.Point(511, 25);
-            this.txtParamChngSrc.Name = "txtParamChngSrc";
-            this.txtParamChngSrc.ReadOnly = true;
-            this.txtParamChngSrc.Size = new System.Drawing.Size(97, 20);
-            this.txtParamChngSrc.TabIndex = 45;
-            // 
             // lblVoltMachSupply
             // 
             this.lblVoltMachSupply.AutoSize = true;
@@ -1100,8 +1083,6 @@
             // 
             // grpParamChng
             // 
-            this.grpParamChng.Controls.Add(this.txtParamChngSrc);
-            this.grpParamChng.Controls.Add(this.lblParamChngSrc);
             this.grpParamChng.Controls.Add(this.dgvParamViewChng);
             this.grpParamChng.Controls.Add(this.lblParamModSched);
             this.grpParamChng.Controls.Add(this.dgvParamViewMisMatch);
@@ -1289,8 +1270,6 @@
         private System.Windows.Forms.Label lblParamFullList;
         private System.Windows.Forms.Label lblParamModSched;
         private System.Windows.Forms.DataGridView dgvParamViewChng;
-        private System.Windows.Forms.Label lblParamChngSrc;
-        private System.Windows.Forms.TextBox txtParamChngSrc;
         private System.Windows.Forms.Label lblVoltMachSupply;
         private System.Windows.Forms.ComboBox cmbMtrVoltSupply;
         private System.Windows.Forms.Label lblVoltMotorMax;

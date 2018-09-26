@@ -107,7 +107,7 @@ namespace V1000_Prog_SQL
             txtSlaveAddr.SelectionLength = 0;
 
             // Open Database
-            if(!dB.Open(ref dBConn, UL_Srv, UL_dB, false, "ElecTest", "ElecTest"))
+            if(!dB.Open(ref dBConn, UL_Srv, UL_dB, true, "ElecTest", "ElecTest"))
             {
                 MsgBox.Err("Unable to open Database!", "Program Error");
                 this.Close();
@@ -136,8 +136,6 @@ namespace V1000_Prog_SQL
                 cmbMtrPartNum.DropDownStyle = ComboBoxStyle.DropDown;
             else
                 cmbMtrPartNum.DropDownStyle = ComboBoxStyle.DropDownList;
-
-
         }
 
         private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
@@ -1148,7 +1146,8 @@ namespace V1000_Prog_SQL
             dgvParamViewChng.Rows.Clear();
 
             opfd.Filter = "Excel 2007 Workbook (*.xlsx)|*.xlsx";
-            opfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            //opfd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            opfd.InitialDirectory = @"N:\ELECTRICAL DATA\APPLICATIONS\VFD Programmer\data";
             if (opfd.ShowDialog() == DialogResult.OK)
             {
                 XL.Application xlApp = new XL.Application();
@@ -1158,12 +1157,18 @@ namespace V1000_Prog_SQL
 
                 int cnt = xlRange.Rows.Count;
                 // Get all the parameter values from the Excel spreadsheet
+                
                 for (int i = 2; i <= cnt; i++)
                 {
                     V1000_File_Data file_data = new V1000_File_Data();
 
-                    if (xlRange.Cells[i, 1] != null && xlRange.Cells[i, 1].Value2 != null)
-                        file_data.ParamNum = xlRange.Cells[i, 1].Value2.ToString();
+                    //if (xlRange.Cells[i, 1] != null && xlRange.Cells[i, 1].Value2 != null)
+                    //    file_data.ParamNum = xlRange.Cells[i, 1].Value2.ToString();
+                    //else
+                    //    file_data.ParamNum = "0";
+
+                    if(xlRange.Cells[i, 2] != null && xlRange.Cells[i, 2].Value2 != null)
+                        file_data.ParamNum = xlRange.Cells[i, 2].Value2.ToString();
                     else
                         file_data.ParamNum = "0";
 
@@ -1185,9 +1190,10 @@ namespace V1000_Prog_SQL
                         // See if the parameter numbers match
                         if (Param_List[j].ParamNum == file_list[i].ParamNum)
                         {
-                            double val = Math.Round(Convert.ToDouble(file_list[i].Value), 2);
-                            ushort chng_val = (ushort)(val * Param_List[j].Multiplier);
-                            UpdateParamViews(chng_val, j);
+                            //double val = Math.Round(Convert.ToDouble(file_list[i].Value), 2);
+                            //ushort chng_val = (ushort)(val / Param_List[j].Multiplier);
+                            //UpdateParamViews(chng_val, j);
+                            UpdateParamViews(Convert.ToUInt16(file_list[i].Value), j);
                             break;
                         }
                     }
@@ -1561,31 +1567,9 @@ namespace V1000_Prog_SQL
             for(int i=0;i<drv_cnt;i++)
                 cmbMachDrvNum.Items.Add((i + 1).ToString());
             cmbMachDrvNum.SelectedIndex = 0;
-            /*
-            string query = "Select * FROM [Sheet1$] WHERE MACH_CODE Like '" + mach_code + "'";
-            if (dB_Query(dBMachine, query, ref tbl) > 0)
-            {
-                // Get drive count, and name information
-                DataRow row = tbl.Rows[0];
-                int drv_cnt = Convert.ToInt32(row["DRV_CNT"].ToString());
-                txtMachDrvCnt.Text = drv_cnt.ToString();
-
-                // Load drive number and name comboboxes if there is more than 0 drives
-                if (drv_cnt > 0)
-                {
-                    for (int i = 0; i < drv_cnt; i++)
-                        cmbMachDrvNum.Items.Add((i + 1).ToString());
-                    cmbMachDrvNum.SelectedIndex = 0;
-                }
-
-                UpdateMachChrtInfo(); // Get chart count and part number information
-
-                cmbMachChrtNum.Enabled = true;
-                btnMachListLoad.Enabled = true;
-                btnMachListDel.Enabled = true;
-                btnMachListStore.Enabled = true;
-            }
-            */
+            
+            UpdMachChrtInf();
+            SetMachBtnEnable(0x07);
         }
 
         private void cmbMachDrvNum_SelectedIndexChanged(object sender, EventArgs e)
@@ -1607,53 +1591,29 @@ namespace V1000_Prog_SQL
             if(cmbMachSel.SelectedIndex < 0)
             {
                 MsgBox.Err("No machine selected!");
-                return;
+                goto ChrtLoadReturn;
             }
 
-            // First make sure that all the machine data is filled in
-            if((cmbMachChrtNum.Text == "") || (cmbMachDrvNum.Text == ""))
-            {
-                MsgBox.Err("Loading a machine VFD parameter chart requires a chart number and drive number selection!");
-                return;
-            }
+            MachInfo info = new MachInfo(GetMachInfo(GetMachCode(cmbMachSel.Text)));
 
-            // Make sure that charts are entered for this machine
+            if(!VerChrtInf(info.mach_code, info.chrt_num, info.drv_num.ToString()))
+                goto ChrtLoadReturn;
+
+            // load the chart
+            string chrt_tbl = GetMachChrtTbl(info.chrt_num_drv);
+            string chrt_col = string.Format("CHRT_{0}", info.chrt_num_drv);
             DataTable tbl = new DataTable();
-            string mach_code = GetMachCode(cmbMachSel.SelectedItem);
-            dB_Query(dBMachine, ref tbl, "CHRT_CNT", "MACH_CODE", mach_code);
-            int chrt_cnt = Convert.ToInt32(tbl.Rows[0]["CHRT_CNT"].ToString());
-            if(chrt_cnt > 0)
+            if(dB.QueryNull(ref dBConn, ref tbl, 0, chrt_tbl, "PARAM_NUM, " + chrt_col, chrt_col, "PARAM_NUM") > 0)
             {
-                // Now check and see if the particular chart selected exists
-                string chart_num_drive = cmbMachChrtNum.Text + "_" + cmbMachDrvNum.Text;
-                if(dB_Query(mach_code + dBChartExt, ref tbl, "*", "CHRT_NUM", chart_num_drive) > 0)
+                foreach(DataRow dr in tbl.Rows)
                 {
-                    // Now open the particular chart and load the parameters in it
-                    if(dB_Query(cmbMachChrtNum.Text + "_" + cmbMachDrvNum.Text, ref tbl, "*", "") > 0)
-                    {
-                        DataRow dr = tbl.Rows[0];
-                        //dr.
-                        for(int i=0;i<tbl.Rows.Count;i++)
-                        {
-                            string param_num = tbl.Rows[i]["PARAM_NUM"].ToString();
-                            int idx = GetParamIndex(param_num, Param_List);
-                            ushort param_val = Convert.ToUInt16(tbl.Rows[i]["PARAM_VAL"].ToString());
-                            UpdateParamViews(param_val, idx);
-                        }
-                    }
-                }
-                else
-                {
-                    string msg = "The drive constants for the " + txtMachDrvName.Text + " VFD in the " + cmbMachChrtNum.Text + " parameter chart do not exist in the system!";
-                    MsgBox.Err(msg, "Parameter Chart Load Error");
-                    return;
+                    int idx = GetParamIndex(dr["PARAM_NUM"].ToString(), Param_List);
+                    UpdateParamViews(Convert.ToUInt16(dr[chrt_col].ToString()), idx);
                 }
             }
-            else
-            {
-                MsgBox.Err("No charts exist for this machine!", "Chart Listing Error!");
-                return;
-            }
+
+            ChrtLoadReturn:
+            return;
         }
 
         private void btnMachStore_Click(object sender, EventArgs e)
@@ -1678,110 +1638,114 @@ namespace V1000_Prog_SQL
                 return;
             }
             
-            string mach_code = GetMachCode(cmbMachSel.SelectedItem);
-            int chart_cnt = -1;
+            // Get the mach code, chart count, and specific chart number info
+            string mach_code = GetMachCode(cmbMachSel.Text);
+            int chrt_cnt = GetMachChrtCnt(mach_code);
 
-            // Check and see if any charts even exist for this machine
+            string chrt_num = cmbMachChrtNum.Text;
+            string chrt_num_drv = string.Format("{0}_{1}", cmbMachChrtNum.Text, cmbMachDrvNum.Text);
+
+            // Check and see if the chart for this specific drive already exists
             DataTable tbl = new DataTable();
-            dB_Query(dBMachine, ref tbl, "CHRT_CNT", "MACH_CODE", mach_code);
-            
-            DataRow row = tbl.Rows[0];
-            chart_cnt = Convert.ToInt32(row[0].ToString());
+            dB.Query(ref dBConn, ref tbl, "CHRT_LST", "IDX", "CHRT_NUM_DRV", dB.StringConv(chrt_num_drv));
 
-            // if the chart count is 0 then we need to create the machine chart file
-            if(chart_cnt == 0)
-                dB_CreateDB(mach_code + dBChartExt, "IDX, CHRT_NUM, CHRT_DSC");
-
-            // Check and see if the chart for this motor already exists
-            string chart_db = mach_code + dBChartExt;
-            string chart_num = cmbMachChrtNum.Text;
-            string chart_num_drive = chart_num + "_" + cmbMachDrvNum.Text;
-            if(dB_Query(chart_db, ref tbl, "*", "CHRT_NUM", chart_num_drive) > 0)
+            // If it does check if overwrite is desired 
+            if(tbl.Rows.Count > 0)
             {
-                if(MsgBox.YN("This chart already exists, do you wish to overwrite", "VFD Chart Overwrite") == DialogResult.No)
+                
+                if(MsgBox.YN("This chart already exists, do you wish to overwrite?", "VFD Chart Overwrite") == DialogResult.No)
                     return;
-
-                // Delete the entry for the chart from the machine specific chart list
-                dB_Delete(chart_db, "CHRT_NUM", chart_num_drive);
-
-                // delete the chart file so that it can be recreated from 
-                // scratch and filled with the new parameter values.
-                dB_Drop(chart_num_drive);
+                // if it is then delete the chart column from the chart list
+                dB.AlterTbl(ref dBConn, 0, "CHRT_V1000", chrt_num_drv);
             }
-            else
+
+            tbl.Dispose();
+            tbl = new DataTable();
+            
+            // Check and see if this is a completely new chart or just an additional drive
+            if(dB.Func(ref dBConn, ref tbl, "COUNT", "CHRT_LST", "CHRT_NUM", dB.StringConv(chrt_num)))
             {
-                // Now check and see if this chart that is being added is completely new or an additional motor chart
-                if(dB_Query(chart_db, ref tbl, "*", "CHRT_NUM", chart_num + "%") == 0)
-                    chart_cnt++;
+                int cnt = Convert.ToInt32(tbl.Rows[0][0].ToString());
+                if(cnt == 0)
+                    chrt_cnt++;
             }
+
+            // Create the new chart column in the chart table
+            string new_chrt_col = string.Format("CHRT_{0}", chrt_num_drv);
+            dB.AlterTbl(ref dBConn, 1, "CHRT_V1000", new_chrt_col);
             
-            dB_MachAddChart(mach_code, chart_num_drive); // Create the VFD chart
-            
-            // start adding all the change parameters to the chart
-            for(int i = 0; i < Param_Chng.Count; i++)
-                dB_Insert(chart_num_drive, "IDX, PARAM_NUM, PARAM_VAL", "'" + i.ToString() + "', '" + Param_Chng[i].ParamNum + "', '" + Param_Chng[i].ParamVal + "'");
+            // Add all the row entries for the parameter chart
+            for(int i=0;i<Param_Chng.Count;i++)
+                dB.Update(ref dBConn, "CHRT_V1000", new_chrt_col, Param_Chng[i].ParamVal.ToString(), "PARAM_NUM", dB.StringConv(Param_Chng[i].ParamNum));
+           
+            // Add chart data to the master chart list
+            string InsCols = "CHRT_NUM_DRV, CHRT_NUM, MACH_CODE";
+            string InsVals = string.Format("{0}, {1}, {2}", dB.StringConv(chrt_num_drv), dB.StringConv(chrt_num), dB.StringConv(mach_code));
+            dB.Insert(ref dBConn, "CHRT_LST", InsCols, InsVals);
 
-            // Update the chart count for the machine
-            dB_Update(dBMachine, "MACH_CODE", mach_code, "CHRT_CNT", chart_cnt.ToString());
+            // Update the chart count in the machine info data table
+            dB.Update(ref dBConn, "MACH_DATA", "CHRT_CNT", chrt_cnt.ToString(), "MACH_CODE", dB.StringConv(mach_code));
 
-            UpdateMachChrtInfo();
+            // Update the machine chart information area
+            UpdMachChrtInf();
 
+            // Let the user know the parameters were stored
             MsgBox.Info("Parameter chart was successfully stored.");
         }
 
         private void btnMachListDel_Click(object sender, EventArgs e)
         {
-            if((cmbMachSel.SelectedIndex == -1) || (cmbMachChrtNum.Text == ""))
-            {
-                MsgBox.Err("No valid machine and/or chart selection!");
-                return;
-            }
-
             // Form the machine code 
             string mach_code = GetMachCode(cmbMachSel.SelectedItem);
+            string chrt_num = cmbMachChrtNum.Text;
+            string chrt_num_drv = string.Format("{0}_{1}", chrt_num, cmbMachDrvNum.Text);
+            if(!VerChrtInf(mach_code, chrt_num, cmbMachDrvNum.Text))
+                goto ChrtDelReturn;
 
+            string chrt_col = string.Format("CHRT_{0}", chrt_num_drv);
+            string chrt_tbl = GetMachChrtTbl(chrt_num_drv);
+
+            // Delete the column from the master parameter chart 
+            dB.AlterTbl(ref dBConn, 0, chrt_tbl, chrt_col);
+
+            // Delete the entry in the master chart list
+            dB.Delete(ref dBConn, "CHRT_LST", "CHRT_NUM_DRV", dB.StringConv(chrt_num_drv));
+
+            // Check and see if there are any other drives remaining for that chart part number
             DataTable tbl = new DataTable();
-
-            // Make sure that there is even a chart that exists for this machine already in storage
-            dB_Query(dBMachine, ref tbl, "CHRT_CNT", "MACH_CODE", mach_code);
-            int chart_cnt = Convert.ToInt32(tbl.Rows[0][0].ToString());
-            if(chart_cnt < 1)
+            if(dB.QueryDist(ref dBConn, ref tbl, "CHRT_LST", "CHRT_NUM", "CHRT_NUM", dB.StringConv(chrt_num)) <= 0)
             {
-                MsgBox.Err("No parameter charts are stored for this machine!", "Chart Delete Error");
-                return;
+                tbl.Dispose();
+                tbl = new DataTable();
+
+                // if there are no more charts left for that number then query the machine info
+                // table, get the chart count, subtract one and store the updated value.
+                string mach_sql = dB.StringConv(mach_code);
+                dB.Query(ref dBConn, ref tbl, "MACH_DATA", "CHRT_CNT", "MACH_CODE", mach_sql);
+                int chrt_cnt = Convert.ToInt32(tbl.Rows[0][0].ToString()) - 1;
+                dB.Update(ref dBConn, "MACH_DATA", "CHRT_CNT", chrt_cnt.ToString(), "MACH_CODE", mach_sql);
+                UpdMachChrtInf();
             }
-
-            // Check and see if chart part number exists in the machine specific database
-            string mach_charts = mach_code + dBChartExt;
-            string chart_num = cmbMachChrtNum.Text;
-            string chart_num_drive = chart_num + "_" + cmbMachDrvNum.Text;
-            
-            if(dB_Query(mach_charts, ref tbl, "*", "CHRT_NUM", chart_num_drive) == 0)
-            {
-                string err_msg = "This specific chart number for drive number " + cmbMachDrvNum.Text + " does not exist in the list of charts associated with the " + mach_code + " machine!";
-                MsgBox.Err(err_msg, "Chart Delete Error");
-                return;
-            }
-
-            // Make sure the user is aware the delete operation is permenant 
-            if(MsgBox.YN("Deleting this chart is permanent, do you wish to continue", "Confirm Parameter Chart Delete") == DialogResult.No)
-                return;
-
-            // Delete the chart file
-            dB_Drop(chart_num_drive);
-
-            // Delete the chart entry from the machine specific database
-            dB_Delete(mach_charts, "CHRT_NUM", chart_num_drive);
-
-            // Update the chart count in the machine info database
-            dB_Update(dBMachine, "MACH_CODE", mach_code, "CHRT_CNT", (--chart_cnt).ToString());
-
-            // If the chart count is now 0 then delete the machine specific database for now.
-            if(chart_cnt < 1)
-                dB_Drop(mach_charts);
 
             MsgBox.Info("Parameter chart was successfully deleted.");
+            
+            ChrtDelReturn:
+            return;
+        }
 
+        private MachInfo GetMachInfo(string p_MachCode)
+        {
+            MachInfo info = new MachInfo();
+
+            info.mach_code = p_MachCode;
+            info.chrt_num = cmbMachChrtNum.Text;
+            info.chrt_cnt = GetMachChrtCnt(info.mach_code);
+            info.drv_cnt = Convert.ToInt32(txtMachDrvCnt.Text);
+            info.drv_num = Convert.ToInt32(cmbMachDrvNum.Text);
+            info.drv_name = txtMachDrvName.Text;
+            info.chrt_num_drv = string.Format("{0}_{1}", info.chrt_num, info.drv_num.ToString());
+
+            return info;
         }
 
         private string GetMachCode(object p_cmbItem)
@@ -1791,6 +1755,12 @@ namespace V1000_Prog_SQL
             string mach_code = str.Substring(0, idx);
 
             return mach_code;
+        }
+
+        private string GetMachCode(string p_Text)
+        {
+            int idx = p_Text.IndexOf(' ');
+            return p_Text.Substring(0, idx);
         }
 
         private string GetMachCodeSQL(object p_cmbItem)
@@ -1807,6 +1777,109 @@ namespace V1000_Prog_SQL
             int idx = p_Entry.IndexOf('_');
             string chart_num = p_Entry.Substring(0, idx);
             return chart_num;
+        }
+
+        private int GetMachChrtCnt(string p_MachCode)
+        {
+            int cnt = -1;
+
+            string mach_code = string.Format("'{0}'", p_MachCode);
+            DataTable tbl = new DataTable();
+            if(dB.Query(ref dBConn, ref tbl, "MACH_DATA", "CHRT_CNT", "MACH_CODE", mach_code) >=0)
+                cnt = Convert.ToInt32(tbl.Rows[0]["CHRT_CNT"].ToString());
+            tbl.Dispose();
+
+            return cnt;
+        }
+
+        private string GetMachChrtTbl(string p_ChrtNumDrv)
+        {
+            string chrt_tbl = "";
+
+            DataTable tbl = new DataTable();
+            if(dB.Query(ref dBConn, ref tbl, "CHRT_LST", "CHRT_TBL", "CHRT_NUM_DRV", dB.StringConv(p_ChrtNumDrv)) >= 0)
+                chrt_tbl = tbl.Rows[0]["CHRT_TBL"].ToString();
+
+            return chrt_tbl;
+        }
+
+        private List<string> GetMachChrtList()
+        {
+            List<string> list = new List<string>();
+
+            DataTable tbl = new DataTable();
+            if(dB.QueryDist(ref dBConn, ref tbl, "CHRT_LST", "CHRT_NUM") >= 0)
+            {
+                foreach(DataRow dr in tbl.Rows)
+                    list.Add(dr[0].ToString());
+            }
+
+            return list;
+        }
+
+        private void UpdMachChrtInf()
+        {
+            // Get the VFD chart count for the particular machine
+            string mach_code = GetMachCode(cmbMachSel.SelectedItem);
+            int chrt_cnt = GetMachChrtCnt(mach_code);
+            txtMachChrtCnt.Text = chrt_cnt.ToString();
+
+            // If the chart count is greater than zero then populate the Chart Part Number combobox.
+            if(chrt_cnt > 0)
+            {
+                //string chrt_tbl = GetMachChrtTbl(mach_code);
+
+                List<string> chrt_list = new List<string>();
+                chrt_list = GetMachChrtList();
+                for(int i=0;i<chrt_list.Count;i++)
+                    cmbMachChrtNum.Items.Add(chrt_list[i]);
+                
+            }
+        }
+
+        private bool VerChrtInf(string p_MachCode, string p_ChrtNum, string p_DrvNum)
+        {
+            bool state = false;
+
+            // First make sure that all the machine data is filled in
+            if((cmbMachChrtNum.Text == "") || (cmbMachDrvNum.Text == ""))
+            {
+                MsgBox.Err("A valid chart number entry and drive number selection is required.");
+                goto VerChrtReturn;
+            }
+
+            // See if any charts exist for the machine
+            DataTable tbl = new DataTable();
+            dB.Query(ref dBConn, ref tbl, "MACH_DATA", "CHRT_CNT", "MACH_CODE", dB.StringConv(p_MachCode));
+            int chart_cnt = Convert.ToInt32(tbl.Rows[0][0].ToString());
+            if(chart_cnt < 1)
+            {
+                MsgBox.Err("No parameter charts are stored for this machine!");
+                goto VerChrtReturn;
+            }
+            tbl.Dispose();
+            tbl = new DataTable();
+
+            // Check and see if the chart part number exists in the master chart list
+            if(dB.QueryDist(ref dBConn, ref tbl, "CHRT_LST", "CHRT_NUM", "CHRT_NUM", dB.StringConv(p_ChrtNum)) <= 0)
+            {
+                MsgBox.Err("Parameter Chart Number " + p_ChrtNum + " does not exist for machine model " + p_MachCode);
+                goto VerChrtReturn;
+            }
+            tbl.Dispose();
+            tbl = new DataTable();
+
+            string chrt_num_drv = string.Format("{0}_{1}", p_ChrtNum, p_DrvNum);
+            if(dB.Query(ref dBConn, ref tbl, "CHRT_LST", "CHRT_NUM_DRV, CHRT_TBL", "CHRT_NUM_DRV", dB.StringConv(chrt_num_drv)) <= 0)
+            {
+                MsgBox.Err("A parameter chart for drive number " + cmbMachDrvNum.Text + " does not exist for parameter chart " + p_DrvNum + " for the " + p_MachCode + " machine.");
+                goto VerChrtReturn;
+            }
+
+            state = true;
+
+            VerChrtReturn:
+            return state;
         }
 
         private void UpdateMachChrtInfo()
@@ -1850,8 +1923,6 @@ namespace V1000_Prog_SQL
                     }
                 }
             }
-
-
         }
 
         private void SetMachBtnEnable(bool p_DelEn, bool p_StoreEn, bool p_LoadEn)
@@ -1910,17 +1981,6 @@ namespace V1000_Prog_SQL
         // Load list of machine codes with their description
         public void LoadMachComboboxes()
         {
-            /*
-            DataTable tbl = new DataTable();
-            if(dB_Query(dBMachine, "SELECT MACH_CODE, MACH_DESC FROM [Sheet1$]", ref tbl) > 0)
-            {
-                foreach(DataRow dr in tbl.Rows)
-                {
-                    string str = dr[0].ToString() + " - " + dr[1].ToString();
-                    cmbMachSel.Items.Add(str);
-                }
-            }
-            */
             DataTable tbl = new DataTable();
             dB.Query(ref dBConn, ref tbl, "MACH_DATA", "MACH_CODE, MACH_DESC", p_OrderBy:"MACH_CODE");
 
@@ -2296,6 +2356,40 @@ namespace V1000_Prog_SQL
             IDX = 0;
         }
 
+    }
+
+    public class MachInfo
+    {
+        public string mach_code;
+        public string chrt_num;
+        public int chrt_cnt;
+        public int drv_cnt;
+        public int drv_num;
+        public string drv_name;
+        public string chrt_num_drv;
+
+        public MachInfo() { }
+
+        public MachInfo(MachInfo p_Info)
+        {
+            this.mach_code = p_Info.mach_code;
+            this.chrt_num = p_Info.chrt_num;
+            this.chrt_cnt = p_Info.chrt_cnt;
+            this.drv_cnt = p_Info.drv_cnt;
+            this.drv_num = p_Info.drv_num;
+            this.drv_name = p_Info.drv_name;
+            this.chrt_num_drv = p_Info.chrt_num_drv;
+        }
+
+        public void Clear()
+        {
+            mach_code = "";
+            chrt_num = "";
+            chrt_cnt = 0;
+            drv_cnt = 0;
+            drv_num = 0;
+            drv_name = "";
+        }
     }
 
 } // Namespace V1000_Prog_SQL
