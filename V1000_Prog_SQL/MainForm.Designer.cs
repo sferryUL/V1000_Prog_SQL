@@ -76,8 +76,8 @@
             this.grpSetDrv = new System.Windows.Forms.GroupBox();
             this.lblDriveSel = new System.Windows.Forms.Label();
             this.lblDriveDuty = new System.Windows.Forms.Label();
-            this.cmbParamGroup = new System.Windows.Forms.ComboBox();
-            this.cmbDriveDuty = new System.Windows.Forms.ComboBox();
+            this.cmbDrvParamGrp = new System.Windows.Forms.ComboBox();
+            this.cmbDrvDuty = new System.Windows.Forms.ComboBox();
             this.cmbDrvList = new System.Windows.Forms.ComboBox();
             this.lblParamGroup = new System.Windows.Forms.Label();
             this.grpSetMach = new System.Windows.Forms.GroupBox();
@@ -85,7 +85,9 @@
             this.label5 = new System.Windows.Forms.Label();
             this.txtMachChrtCnt = new System.Windows.Forms.TextBox();
             this.cmbMachSupplyFreq = new System.Windows.Forms.ComboBox();
+            this.lblSelMotor = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
+            this.cmbMachDrvNum = new System.Windows.Forms.ComboBox();
             this.txtMachDrvCnt = new System.Windows.Forms.TextBox();
             this.btnMachListDel = new System.Windows.Forms.Button();
             this.btnMachListLoad = new System.Windows.Forms.Button();
@@ -98,8 +100,6 @@
             this.label2 = new System.Windows.Forms.Label();
             this.cmbMachSel = new System.Windows.Forms.ComboBox();
             this.lblSelMach = new System.Windows.Forms.Label();
-            this.cmbMachDrvNum = new System.Windows.Forms.ComboBox();
-            this.lblSelMotor = new System.Windows.Forms.Label();
             this.lblParamFullList = new System.Windows.Forms.Label();
             this.dgvParamViewMisMatch = new System.Windows.Forms.DataGridView();
             this.cmMisMatchParamAddr = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -108,7 +108,7 @@
             this.cmMisMatchDefVal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.cmMisMatchReadVal = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lblParamMismatch = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.grpDrvComm = new System.Windows.Forms.GroupBox();
             this.btnVFDVer = new System.Windows.Forms.Button();
             this.btnVFDReset = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -132,14 +132,25 @@
             this.lblMotorFLC = new System.Windows.Forms.Label();
             this.lblUnitsAmps1 = new System.Windows.Forms.Label();
             this.txtMtrFLC = new System.Windows.Forms.TextBox();
-            this.btnMtrSet = new System.Windows.Forms.Button();
+            this.btnMtrSetVals = new System.Windows.Forms.Button();
             this.grpParamChng = new System.Windows.Forms.GroupBox();
             this.cmbMtrPartNum = new System.Windows.Forms.ComboBox();
             this.lblMotorPartNum = new System.Windows.Forms.Label();
             this.bwrkVFDVerify = new System.ComponentModel.BackgroundWorker();
-            this.grpSetMotor = new System.Windows.Forms.GroupBox();
+            this.grpMtrSet = new System.Windows.Forms.GroupBox();
             this.btnMtrDel = new System.Windows.Forms.Button();
             this.btnMtrStore = new System.Windows.Forms.Button();
+            this.grpMtr2Set = new System.Windows.Forms.GroupBox();
+            this.btnMtr2SetVals = new System.Windows.Forms.Button();
+            this.txtMtr2FLC = new System.Windows.Forms.TextBox();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.cmbMtr2PartNum = new System.Windows.Forms.ComboBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
+            this.cmbMtr2VoltMax = new System.Windows.Forms.ComboBox();
+            this.label10 = new System.Windows.Forms.Label();
+            this.cmbMtr2FreqBase = new System.Windows.Forms.ComboBox();
             this.grpCommSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewFull)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -149,11 +160,12 @@
             this.grpSetDrv.SuspendLayout();
             this.grpSetMach.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewMisMatch)).BeginInit();
-            this.groupBox4.SuspendLayout();
+            this.grpDrvComm.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewChng)).BeginInit();
             this.grpParamChng.SuspendLayout();
-            this.grpSetMotor.SuspendLayout();
+            this.grpMtrSet.SuspendLayout();
+            this.grpMtr2Set.SuspendLayout();
             this.SuspendLayout();
             // 
             // txtSlaveAddr
@@ -234,7 +246,7 @@
             this.dgvParamViewFull.Name = "dgvParamViewFull";
             this.dgvParamViewFull.RowHeadersVisible = false;
             this.dgvParamViewFull.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvParamViewFull.Size = new System.Drawing.Size(598, 424);
+            this.dgvParamViewFull.Size = new System.Drawing.Size(598, 460);
             this.dgvParamViewFull.TabIndex = 36;
             this.dgvParamViewFull.TabStop = false;
             this.dgvParamViewFull.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dgvParamViewFull_CellBeginEdit);
@@ -307,7 +319,7 @@
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.statProgLabel,
             this.statProgress});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 786);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 820);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1244, 22);
             this.statusStrip1.TabIndex = 37;
@@ -329,7 +341,7 @@
             // btnVFDRead
             // 
             this.btnVFDRead.Enabled = false;
-            this.btnVFDRead.Location = new System.Drawing.Point(5, 18);
+            this.btnVFDRead.Location = new System.Drawing.Point(161, 19);
             this.btnVFDRead.Name = "btnVFDRead";
             this.btnVFDRead.Size = new System.Drawing.Size(130, 23);
             this.btnVFDRead.TabIndex = 2;
@@ -432,7 +444,7 @@
             this.grpSetDrive.Controls.Add(this.dgvParamViewFull);
             this.grpSetDrive.Location = new System.Drawing.Point(7, 86);
             this.grpSetDrive.Name = "grpSetDrive";
-            this.grpSetDrive.Size = new System.Drawing.Size(610, 695);
+            this.grpSetDrive.Size = new System.Drawing.Size(610, 731);
             this.grpSetDrive.TabIndex = 45;
             this.grpSetDrive.TabStop = false;
             this.grpSetDrive.Text = "VFD Complete Parameter Information";
@@ -441,8 +453,8 @@
             // 
             this.grpSetDrv.Controls.Add(this.lblDriveSel);
             this.grpSetDrv.Controls.Add(this.lblDriveDuty);
-            this.grpSetDrv.Controls.Add(this.cmbParamGroup);
-            this.grpSetDrv.Controls.Add(this.cmbDriveDuty);
+            this.grpSetDrv.Controls.Add(this.cmbDrvParamGrp);
+            this.grpSetDrv.Controls.Add(this.cmbDrvDuty);
             this.grpSetDrv.Controls.Add(this.cmbDrvList);
             this.grpSetDrv.Controls.Add(this.lblParamGroup);
             this.grpSetDrv.Location = new System.Drawing.Point(5, 150);
@@ -470,30 +482,30 @@
             this.lblDriveDuty.TabIndex = 49;
             this.lblDriveDuty.Text = "Drive Duty Setting:";
             // 
-            // cmbParamGroup
+            // cmbDrvParamGrp
             // 
-            this.cmbParamGroup.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbParamGroup.Enabled = false;
-            this.cmbParamGroup.FormattingEnabled = true;
-            this.cmbParamGroup.Location = new System.Drawing.Point(102, 52);
-            this.cmbParamGroup.Name = "cmbParamGroup";
-            this.cmbParamGroup.Size = new System.Drawing.Size(277, 21);
-            this.cmbParamGroup.TabIndex = 1;
-            this.cmbParamGroup.SelectedIndexChanged += new System.EventHandler(this.cmbParamGroup_SelectedIndexChanged);
+            this.cmbDrvParamGrp.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDrvParamGrp.Enabled = false;
+            this.cmbDrvParamGrp.FormattingEnabled = true;
+            this.cmbDrvParamGrp.Location = new System.Drawing.Point(102, 52);
+            this.cmbDrvParamGrp.Name = "cmbDrvParamGrp";
+            this.cmbDrvParamGrp.Size = new System.Drawing.Size(277, 21);
+            this.cmbDrvParamGrp.TabIndex = 1;
+            this.cmbDrvParamGrp.SelectedIndexChanged += new System.EventHandler(this.cmbDrvParamGrp_SelectedIndexChanged);
             // 
-            // cmbDriveDuty
+            // cmbDrvDuty
             // 
-            this.cmbDriveDuty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbDriveDuty.Enabled = false;
-            this.cmbDriveDuty.FormattingEnabled = true;
-            this.cmbDriveDuty.Items.AddRange(new object[] {
+            this.cmbDrvDuty.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbDrvDuty.Enabled = false;
+            this.cmbDrvDuty.FormattingEnabled = true;
+            this.cmbDrvDuty.Items.AddRange(new object[] {
             "Normal Duty",
             "Heavy Duty"});
-            this.cmbDriveDuty.Location = new System.Drawing.Point(495, 25);
-            this.cmbDriveDuty.Name = "cmbDriveDuty";
-            this.cmbDriveDuty.Size = new System.Drawing.Size(97, 21);
-            this.cmbDriveDuty.TabIndex = 48;
-            this.cmbDriveDuty.SelectedIndexChanged += new System.EventHandler(this.cmbDriveDuty_SelectedIndexChanged);
+            this.cmbDrvDuty.Location = new System.Drawing.Point(495, 25);
+            this.cmbDrvDuty.Name = "cmbDrvDuty";
+            this.cmbDrvDuty.Size = new System.Drawing.Size(97, 21);
+            this.cmbDrvDuty.TabIndex = 48;
+            this.cmbDrvDuty.SelectedIndexChanged += new System.EventHandler(this.cmbDrvDuty_SelectedIndexChanged);
             // 
             // cmbDrvList
             // 
@@ -503,7 +515,7 @@
             this.cmbDrvList.Name = "cmbDrvList";
             this.cmbDrvList.Size = new System.Drawing.Size(277, 21);
             this.cmbDrvList.TabIndex = 0;
-            this.cmbDrvList.SelectedIndexChanged += new System.EventHandler(this.cmbDriveSel_SelectedIndexChanged);
+            this.cmbDrvList.SelectedIndexChanged += new System.EventHandler(this.cmbDrvList_SelectedIndexChanged);
             // 
             // lblParamGroup
             // 
@@ -520,7 +532,9 @@
             this.grpSetMach.Controls.Add(this.label5);
             this.grpSetMach.Controls.Add(this.txtMachChrtCnt);
             this.grpSetMach.Controls.Add(this.cmbMachSupplyFreq);
+            this.grpSetMach.Controls.Add(this.lblSelMotor);
             this.grpSetMach.Controls.Add(this.label3);
+            this.grpSetMach.Controls.Add(this.cmbMachDrvNum);
             this.grpSetMach.Controls.Add(this.txtMachDrvCnt);
             this.grpSetMach.Controls.Add(this.btnMachListDel);
             this.grpSetMach.Controls.Add(this.btnMachListLoad);
@@ -533,8 +547,6 @@
             this.grpSetMach.Controls.Add(this.label2);
             this.grpSetMach.Controls.Add(this.cmbMachSel);
             this.grpSetMach.Controls.Add(this.lblSelMach);
-            this.grpSetMach.Controls.Add(this.cmbMachDrvNum);
-            this.grpSetMach.Controls.Add(this.lblSelMotor);
             this.grpSetMach.Location = new System.Drawing.Point(6, 19);
             this.grpSetMach.Name = "grpSetMach";
             this.grpSetMach.Size = new System.Drawing.Size(598, 125);
@@ -583,7 +595,16 @@
             this.cmbMachSupplyFreq.Name = "cmbMachSupplyFreq";
             this.cmbMachSupplyFreq.Size = new System.Drawing.Size(55, 21);
             this.cmbMachSupplyFreq.TabIndex = 68;
-            this.cmbMachSupplyFreq.SelectedIndexChanged += new System.EventHandler(this.cmbFreqMach_SelectedIndexChanged);
+            this.cmbMachSupplyFreq.SelectedIndexChanged += new System.EventHandler(this.cmbMachSupplyFreq_SelectedIndexChanged);
+            // 
+            // lblSelMotor
+            // 
+            this.lblSelMotor.AutoSize = true;
+            this.lblSelMotor.Location = new System.Drawing.Point(472, 58);
+            this.lblSelMotor.Name = "lblSelMotor";
+            this.lblSelMotor.Size = new System.Drawing.Size(75, 13);
+            this.lblSelMotor.TabIndex = 61;
+            this.lblSelMotor.Text = "Drive Number:";
             // 
             // label3
             // 
@@ -594,6 +615,16 @@
             this.label3.TabIndex = 14;
             this.label3.Text = "Drive Count:";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cmbMachDrvNum
+            // 
+            this.cmbMachDrvNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMachDrvNum.FormattingEnabled = true;
+            this.cmbMachDrvNum.Location = new System.Drawing.Point(549, 55);
+            this.cmbMachDrvNum.Name = "cmbMachDrvNum";
+            this.cmbMachDrvNum.Size = new System.Drawing.Size(42, 21);
+            this.cmbMachDrvNum.TabIndex = 64;
+            this.cmbMachDrvNum.SelectedIndexChanged += new System.EventHandler(this.cmbMachDrvNum_SelectedIndexChanged);
             // 
             // txtMachDrvCnt
             // 
@@ -627,7 +658,7 @@
             this.btnMachListLoad.TabIndex = 65;
             this.btnMachListLoad.Text = "Load Parameter List";
             this.btnMachListLoad.UseVisualStyleBackColor = true;
-            this.btnMachListLoad.Click += new System.EventHandler(this.btnMachLoad_Click);
+            this.btnMachListLoad.Click += new System.EventHandler(this.btnMachListLoad_Click);
             // 
             // label1
             // 
@@ -656,12 +687,12 @@
             this.btnMachListStore.TabIndex = 65;
             this.btnMachListStore.Text = "Store Parameter List";
             this.btnMachListStore.UseVisualStyleBackColor = true;
-            this.btnMachListStore.Click += new System.EventHandler(this.btnMachStore_Click);
+            this.btnMachListStore.Click += new System.EventHandler(this.btnMachListStore_Click);
             // 
             // cmbMachChrtNum
             // 
             this.cmbMachChrtNum.FormattingEnabled = true;
-            this.cmbMachChrtNum.Location = new System.Drawing.Point(494, 55);
+            this.cmbMachChrtNum.Location = new System.Drawing.Point(353, 54);
             this.cmbMachChrtNum.Name = "cmbMachChrtNum";
             this.cmbMachChrtNum.Size = new System.Drawing.Size(97, 21);
             this.cmbMachChrtNum.TabIndex = 63;
@@ -671,6 +702,7 @@
             this.cmbMachSupplyVolt.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbMachSupplyVolt.FormattingEnabled = true;
             this.cmbMachSupplyVolt.Items.AddRange(new object[] {
+            "200 V",
             "208 V",
             "220 V",
             "230 V",
@@ -683,12 +715,12 @@
             this.cmbMachSupplyVolt.Name = "cmbMachSupplyVolt";
             this.cmbMachSupplyVolt.Size = new System.Drawing.Size(55, 21);
             this.cmbMachSupplyVolt.TabIndex = 50;
-            this.cmbMachSupplyVolt.SelectedIndexChanged += new System.EventHandler(this.cmbVoltMach_SelectedIndexChanged);
+            this.cmbMachSupplyVolt.SelectedIndexChanged += new System.EventHandler(this.cmbMachSupplyVolt_SelectedIndexChanged);
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(391, 58);
+            this.label4.Location = new System.Drawing.Point(250, 57);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(97, 13);
             this.label4.TabIndex = 62;
@@ -713,7 +745,7 @@
             this.cmbMachSel.Name = "cmbMachSel";
             this.cmbMachSel.Size = new System.Drawing.Size(182, 21);
             this.cmbMachSel.TabIndex = 63;
-            this.cmbMachSel.SelectedIndexChanged += new System.EventHandler(this.cmbSelMach_SelectedIndexChanged);
+            this.cmbMachSel.SelectedIndexChanged += new System.EventHandler(this.cmbMachSel_SelectedIndexChanged);
             // 
             // lblSelMach
             // 
@@ -723,25 +755,6 @@
             this.lblSelMach.Size = new System.Drawing.Size(98, 13);
             this.lblSelMach.TabIndex = 62;
             this.lblSelMach.Text = "Machine Selection:";
-            // 
-            // cmbMachDrvNum
-            // 
-            this.cmbMachDrvNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cmbMachDrvNum.FormattingEnabled = true;
-            this.cmbMachDrvNum.Location = new System.Drawing.Point(318, 55);
-            this.cmbMachDrvNum.Name = "cmbMachDrvNum";
-            this.cmbMachDrvNum.Size = new System.Drawing.Size(42, 21);
-            this.cmbMachDrvNum.TabIndex = 64;
-            this.cmbMachDrvNum.SelectedIndexChanged += new System.EventHandler(this.cmbMachDrvNum_SelectedIndexChanged);
-            // 
-            // lblSelMotor
-            // 
-            this.lblSelMotor.AutoSize = true;
-            this.lblSelMotor.Location = new System.Drawing.Point(241, 58);
-            this.lblSelMotor.Name = "lblSelMotor";
-            this.lblSelMotor.Size = new System.Drawing.Size(75, 13);
-            this.lblSelMotor.TabIndex = 61;
-            this.lblSelMotor.Text = "Drive Number:";
             // 
             // lblParamFullList
             // 
@@ -766,7 +779,7 @@
             this.cmMisMatchDefVal,
             this.cmMisMatchReadVal});
             this.dgvParamViewMisMatch.ContextMenuStrip = this.ctxtDriveMod;
-            this.dgvParamViewMisMatch.Location = new System.Drawing.Point(6, 355);
+            this.dgvParamViewMisMatch.Location = new System.Drawing.Point(6, 309);
             this.dgvParamViewMisMatch.Name = "dgvParamViewMisMatch";
             this.dgvParamViewMisMatch.RowHeadersVisible = false;
             this.dgvParamViewMisMatch.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
@@ -834,24 +847,25 @@
             // lblParamMismatch
             // 
             this.lblParamMismatch.AutoSize = true;
-            this.lblParamMismatch.Location = new System.Drawing.Point(7, 339);
+            this.lblParamMismatch.Location = new System.Drawing.Point(7, 293);
             this.lblParamMismatch.Name = "lblParamMismatch";
             this.lblParamMismatch.Size = new System.Drawing.Size(134, 13);
             this.lblParamMismatch.TabIndex = 46;
             this.lblParamMismatch.Text = "Drive Modified Parameters:";
             // 
-            // groupBox4
+            // grpDrvComm
             // 
-            this.groupBox4.Controls.Add(this.btnVFDVer);
-            this.groupBox4.Controls.Add(this.btnVFDReset);
-            this.groupBox4.Controls.Add(this.btnVFDRead);
-            this.groupBox4.Controls.Add(this.btnVFDMod);
-            this.groupBox4.Location = new System.Drawing.Point(623, 728);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(614, 53);
-            this.groupBox4.TabIndex = 47;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Drive Communication Commands";
+            this.grpDrvComm.Controls.Add(this.btnVFDVer);
+            this.grpDrvComm.Controls.Add(this.btnVFDReset);
+            this.grpDrvComm.Controls.Add(this.btnVFDRead);
+            this.grpDrvComm.Controls.Add(this.btnVFDMod);
+            this.grpDrvComm.Enabled = false;
+            this.grpDrvComm.Location = new System.Drawing.Point(623, 764);
+            this.grpDrvComm.Name = "grpDrvComm";
+            this.grpDrvComm.Size = new System.Drawing.Size(614, 53);
+            this.grpDrvComm.TabIndex = 47;
+            this.grpDrvComm.TabStop = false;
+            this.grpDrvComm.Text = "Drive Communication Commands";
             // 
             // btnVFDVer
             // 
@@ -867,7 +881,7 @@
             // btnVFDReset
             // 
             this.btnVFDReset.Enabled = false;
-            this.btnVFDReset.Location = new System.Drawing.Point(161, 18);
+            this.btnVFDReset.Location = new System.Drawing.Point(6, 19);
             this.btnVFDReset.Name = "btnVFDReset";
             this.btnVFDReset.Size = new System.Drawing.Size(130, 23);
             this.btnVFDReset.TabIndex = 3;
@@ -1036,6 +1050,7 @@
             this.cmbMtrVoltMax.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbMtrVoltMax.FormattingEnabled = true;
             this.cmbMtrVoltMax.Items.AddRange(new object[] {
+            "200 V",
             "208 V",
             "220 V",
             "230 V",
@@ -1048,7 +1063,7 @@
             this.cmbMtrVoltMax.Name = "cmbMtrVoltMax";
             this.cmbMtrVoltMax.Size = new System.Drawing.Size(68, 21);
             this.cmbMtrVoltMax.TabIndex = 52;
-            this.cmbMtrVoltMax.SelectedIndexChanged += new System.EventHandler(this.cmbVoltMotorMax_SelectedIndexChanged);
+            this.cmbMtrVoltMax.SelectedIndexChanged += new System.EventHandler(this.MtrVoltMax_SelectedIndexChanged);
             // 
             // lblFreqMotorBase
             // 
@@ -1070,7 +1085,7 @@
             this.cmbMtrFreqBase.Name = "cmbMtrFreqBase";
             this.cmbMtrFreqBase.Size = new System.Drawing.Size(68, 21);
             this.cmbMtrFreqBase.TabIndex = 56;
-            this.cmbMtrFreqBase.SelectedIndexChanged += new System.EventHandler(this.cmbFreqMotorBase_SelectedIndexChanged);
+            this.cmbMtrFreqBase.SelectedIndexChanged += new System.EventHandler(this.MtrFreqBase_SelectedIndexChanged);
             // 
             // lblMotorFLC
             // 
@@ -1097,15 +1112,16 @@
             this.txtMtrFLC.Size = new System.Drawing.Size(48, 20);
             this.txtMtrFLC.TabIndex = 59;
             // 
-            // btnMtrSet
+            // btnMtrSetVals
             // 
-            this.btnMtrSet.Location = new System.Drawing.Point(318, 44);
-            this.btnMtrSet.Name = "btnMtrSet";
-            this.btnMtrSet.Size = new System.Drawing.Size(130, 23);
-            this.btnMtrSet.TabIndex = 60;
-            this.btnMtrSet.Text = "Set Motor Values";
-            this.btnMtrSet.UseVisualStyleBackColor = true;
-            this.btnMtrSet.Click += new System.EventHandler(this.btnSetMotorVals);
+            this.btnMtrSetVals.Enabled = false;
+            this.btnMtrSetVals.Location = new System.Drawing.Point(318, 44);
+            this.btnMtrSetVals.Name = "btnMtrSetVals";
+            this.btnMtrSetVals.Size = new System.Drawing.Size(130, 23);
+            this.btnMtrSetVals.TabIndex = 60;
+            this.btnMtrSetVals.Text = "Set Motor Values";
+            this.btnMtrSetVals.UseVisualStyleBackColor = true;
+            this.btnMtrSetVals.Click += new System.EventHandler(this.btnSetMotorVals);
             // 
             // grpParamChng
             // 
@@ -1113,9 +1129,9 @@
             this.grpParamChng.Controls.Add(this.lblParamModSched);
             this.grpParamChng.Controls.Add(this.dgvParamViewMisMatch);
             this.grpParamChng.Controls.Add(this.lblParamMismatch);
-            this.grpParamChng.Location = new System.Drawing.Point(623, 112);
+            this.grpParamChng.Location = new System.Drawing.Point(623, 195);
             this.grpParamChng.Name = "grpParamChng";
-            this.grpParamChng.Size = new System.Drawing.Size(614, 610);
+            this.grpParamChng.Size = new System.Drawing.Size(614, 563);
             this.grpParamChng.TabIndex = 46;
             this.grpParamChng.TabStop = false;
             this.grpParamChng.Text = "VFD Parameter Changes";
@@ -1128,7 +1144,8 @@
             this.cmbMtrPartNum.Name = "cmbMtrPartNum";
             this.cmbMtrPartNum.Size = new System.Drawing.Size(68, 21);
             this.cmbMtrPartNum.TabIndex = 66;
-            this.cmbMtrPartNum.SelectedIndexChanged += new System.EventHandler(this.cmbMotorPartNum_SelectedIndexChanged);
+            this.cmbMtrPartNum.SelectedIndexChanged += new System.EventHandler(this.MtrPartNum_SelectedIndexChanged);
+            this.cmbMtrPartNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MtrPartNum_KeyDown);
             // 
             // lblMotorPartNum
             // 
@@ -1146,27 +1163,26 @@
             this.bwrkVFDVerify.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.bwrkDGV_ProgressChanged);
             this.bwrkVFDVerify.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.bwrkVFDVerify_RunWorkerCompleted);
             // 
-            // grpSetMotor
+            // grpMtrSet
             // 
-            this.grpSetMotor.Controls.Add(this.btnMtrDel);
-            this.grpSetMotor.Controls.Add(this.btnMtrStore);
-            this.grpSetMotor.Controls.Add(this.btnMtrSet);
-            this.grpSetMotor.Controls.Add(this.txtMtrFLC);
-            this.grpSetMotor.Controls.Add(this.lblUnitsAmps1);
-            this.grpSetMotor.Controls.Add(this.lblMotorFLC);
-            this.grpSetMotor.Controls.Add(this.cmbMtrPartNum);
-            this.grpSetMotor.Controls.Add(this.lblMotorPartNum);
-            this.grpSetMotor.Controls.Add(this.lblVoltMotorMax);
-            this.grpSetMotor.Controls.Add(this.cmbMtrVoltMax);
-            this.grpSetMotor.Controls.Add(this.lblFreqMotorBase);
-            this.grpSetMotor.Controls.Add(this.cmbMtrFreqBase);
-            this.grpSetMotor.Enabled = false;
-            this.grpSetMotor.Location = new System.Drawing.Point(623, 27);
-            this.grpSetMotor.Name = "grpSetMotor";
-            this.grpSetMotor.Size = new System.Drawing.Size(614, 79);
-            this.grpSetMotor.TabIndex = 49;
-            this.grpSetMotor.TabStop = false;
-            this.grpSetMotor.Text = "Motor Settings";
+            this.grpMtrSet.Controls.Add(this.btnMtrDel);
+            this.grpMtrSet.Controls.Add(this.btnMtrStore);
+            this.grpMtrSet.Controls.Add(this.btnMtrSetVals);
+            this.grpMtrSet.Controls.Add(this.txtMtrFLC);
+            this.grpMtrSet.Controls.Add(this.lblUnitsAmps1);
+            this.grpMtrSet.Controls.Add(this.lblMotorFLC);
+            this.grpMtrSet.Controls.Add(this.cmbMtrPartNum);
+            this.grpMtrSet.Controls.Add(this.lblMotorPartNum);
+            this.grpMtrSet.Controls.Add(this.lblVoltMotorMax);
+            this.grpMtrSet.Controls.Add(this.cmbMtrVoltMax);
+            this.grpMtrSet.Controls.Add(this.lblFreqMotorBase);
+            this.grpMtrSet.Controls.Add(this.cmbMtrFreqBase);
+            this.grpMtrSet.Location = new System.Drawing.Point(623, 27);
+            this.grpMtrSet.Name = "grpMtrSet";
+            this.grpMtrSet.Size = new System.Drawing.Size(614, 79);
+            this.grpMtrSet.TabIndex = 49;
+            this.grpMtrSet.TabStop = false;
+            this.grpMtrSet.Text = "Motor Settings";
             // 
             // btnMtrDel
             // 
@@ -1188,18 +1204,145 @@
             this.btnMtrStore.UseVisualStyleBackColor = true;
             this.btnMtrStore.Click += new System.EventHandler(this.btnMtrStore_Click);
             // 
+            // grpMtr2Set
+            // 
+            this.grpMtr2Set.Controls.Add(this.btnMtr2SetVals);
+            this.grpMtr2Set.Controls.Add(this.txtMtr2FLC);
+            this.grpMtr2Set.Controls.Add(this.label6);
+            this.grpMtr2Set.Controls.Add(this.label7);
+            this.grpMtr2Set.Controls.Add(this.cmbMtr2PartNum);
+            this.grpMtr2Set.Controls.Add(this.label8);
+            this.grpMtr2Set.Controls.Add(this.label9);
+            this.grpMtr2Set.Controls.Add(this.cmbMtr2VoltMax);
+            this.grpMtr2Set.Controls.Add(this.label10);
+            this.grpMtr2Set.Controls.Add(this.cmbMtr2FreqBase);
+            this.grpMtr2Set.Location = new System.Drawing.Point(623, 112);
+            this.grpMtr2Set.Name = "grpMtr2Set";
+            this.grpMtr2Set.Size = new System.Drawing.Size(614, 79);
+            this.grpMtr2Set.TabIndex = 50;
+            this.grpMtr2Set.TabStop = false;
+            this.grpMtr2Set.Text = "Motor 2 Settings";
+            this.grpMtr2Set.Visible = false;
+            // 
+            // btnMtr2SetVals
+            // 
+            this.btnMtr2SetVals.Location = new System.Drawing.Point(318, 44);
+            this.btnMtr2SetVals.Name = "btnMtr2SetVals";
+            this.btnMtr2SetVals.Size = new System.Drawing.Size(130, 23);
+            this.btnMtr2SetVals.TabIndex = 60;
+            this.btnMtr2SetVals.Text = "Set Motor 2 Values";
+            this.btnMtr2SetVals.UseVisualStyleBackColor = true;
+            this.btnMtr2SetVals.Click += new System.EventHandler(this.btnMtr2SetVals_Click);
+            // 
+            // txtMtr2FLC
+            // 
+            this.txtMtr2FLC.Location = new System.Drawing.Point(540, 46);
+            this.txtMtr2FLC.Name = "txtMtr2FLC";
+            this.txtMtr2FLC.Size = new System.Drawing.Size(48, 20);
+            this.txtMtr2FLC.TabIndex = 59;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(594, 50);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(14, 13);
+            this.label6.TabIndex = 58;
+            this.label6.Text = "A";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(475, 49);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(59, 13);
+            this.label7.TabIndex = 57;
+            this.label7.Text = "Motor FLC:";
+            // 
+            // cmbMtr2PartNum
+            // 
+            this.cmbMtr2PartNum.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMtr2PartNum.FormattingEnabled = true;
+            this.cmbMtr2PartNum.Location = new System.Drawing.Point(540, 19);
+            this.cmbMtr2PartNum.Name = "cmbMtr2PartNum";
+            this.cmbMtr2PartNum.Size = new System.Drawing.Size(68, 21);
+            this.cmbMtr2PartNum.TabIndex = 66;
+            this.cmbMtr2PartNum.SelectedIndexChanged += new System.EventHandler(this.MtrPartNum_SelectedIndexChanged);
+            this.cmbMtr2PartNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MtrPartNum_KeyDown);
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(435, 22);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(99, 13);
+            this.label8.TabIndex = 65;
+            this.label8.Text = "Motor Part Number:";
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(6, 22);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(99, 13);
+            this.label9.TabIndex = 51;
+            this.label9.Text = "Max Motor Voltage:";
+            // 
+            // cmbMtr2VoltMax
+            // 
+            this.cmbMtr2VoltMax.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMtr2VoltMax.FormattingEnabled = true;
+            this.cmbMtr2VoltMax.Items.AddRange(new object[] {
+            "200 V",
+            "208 V",
+            "220 V",
+            "230 V",
+            "240 V",
+            "380 V",
+            "400 V",
+            "415 V",
+            "460 V"});
+            this.cmbMtr2VoltMax.Location = new System.Drawing.Point(111, 19);
+            this.cmbMtr2VoltMax.Name = "cmbMtr2VoltMax";
+            this.cmbMtr2VoltMax.Size = new System.Drawing.Size(68, 21);
+            this.cmbMtr2VoltMax.TabIndex = 52;
+            this.cmbMtr2VoltMax.SelectedIndexChanged += new System.EventHandler(this.MtrVoltMax_SelectedIndexChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(207, 22);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(117, 13);
+            this.label10.TabIndex = 55;
+            this.label10.Text = "Motor Base Frequency:";
+            // 
+            // cmbMtr2FreqBase
+            // 
+            this.cmbMtr2FreqBase.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbMtr2FreqBase.FormattingEnabled = true;
+            this.cmbMtr2FreqBase.Items.AddRange(new object[] {
+            "50 Hz",
+            "60 Hz"});
+            this.cmbMtr2FreqBase.Location = new System.Drawing.Point(330, 19);
+            this.cmbMtr2FreqBase.Name = "cmbMtr2FreqBase";
+            this.cmbMtr2FreqBase.Size = new System.Drawing.Size(68, 21);
+            this.cmbMtr2FreqBase.TabIndex = 56;
+            this.cmbMtr2FreqBase.SelectedIndexChanged += new System.EventHandler(this.MtrFreqBase_SelectedIndexChanged);
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1244, 808);
-            this.Controls.Add(this.grpSetMotor);
+            this.ClientSize = new System.Drawing.Size(1244, 842);
+            this.Controls.Add(this.grpMtr2Set);
+            this.Controls.Add(this.grpMtrSet);
             this.Controls.Add(this.grpCommSettings);
             this.Controls.Add(this.grpSetDrive);
             this.Controls.Add(this.grpParamChng);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.statusStrip1);
-            this.Controls.Add(this.groupBox4);
+            this.Controls.Add(this.grpDrvComm);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "frmMain";
@@ -1220,14 +1363,16 @@
             this.grpSetMach.ResumeLayout(false);
             this.grpSetMach.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewMisMatch)).EndInit();
-            this.groupBox4.ResumeLayout(false);
+            this.grpDrvComm.ResumeLayout(false);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvParamViewChng)).EndInit();
             this.grpParamChng.ResumeLayout(false);
             this.grpParamChng.PerformLayout();
-            this.grpSetMotor.ResumeLayout(false);
-            this.grpSetMotor.PerformLayout();
+            this.grpMtrSet.ResumeLayout(false);
+            this.grpMtrSet.PerformLayout();
+            this.grpMtr2Set.ResumeLayout(false);
+            this.grpMtr2Set.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1249,8 +1394,8 @@
         private System.Windows.Forms.Button btnVFDMod;
         private System.ComponentModel.BackgroundWorker bwrkModVFD;
         private System.Windows.Forms.GroupBox grpSetDrive;
-        private System.Windows.Forms.ComboBox cmbParamGroup;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.ComboBox cmbDrvParamGrp;
+        private System.Windows.Forms.GroupBox grpDrvComm;
         private System.Windows.Forms.Button btnVFDReset;
         private System.Windows.Forms.Button btnVFDVer;
         private System.Windows.Forms.ComboBox cmbDrvList;
@@ -1281,7 +1426,7 @@
         private System.Windows.Forms.Label lblMotorFLC;
         private System.Windows.Forms.Label lblUnitsAmps1;
         private System.Windows.Forms.TextBox txtMtrFLC;
-        private System.Windows.Forms.Button btnMtrSet;
+        private System.Windows.Forms.Button btnMtrSetVals;
         private System.Windows.Forms.GroupBox grpParamChng;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmRegAddr;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmParamNum;
@@ -1290,7 +1435,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn cmVFDVal;
         private System.ComponentModel.BackgroundWorker bwrkVFDVerify;
         private System.Windows.Forms.Label lblDriveDuty;
-        private System.Windows.Forms.ComboBox cmbDriveDuty;
+        private System.Windows.Forms.ComboBox cmbDrvDuty;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmMisMatchParamAddr;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmMisMatchParamNum;
         private System.Windows.Forms.DataGridViewTextBoxColumn cmMisMatchParamName;
@@ -1311,7 +1456,7 @@
         private System.Windows.Forms.ToolStripMenuItem ctxtSchedChng_Load;
         private System.Windows.Forms.ComboBox cmbMachSupplyFreq;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.GroupBox grpSetMotor;
+        private System.Windows.Forms.GroupBox grpMtrSet;
         private System.Windows.Forms.GroupBox grpSetMach;
         private System.Windows.Forms.Button btnMachListStore;
         private System.Windows.Forms.Label label2;
@@ -1329,6 +1474,17 @@
         private System.Windows.Forms.Button btnMtrDel;
         private System.Windows.Forms.ToolStripMenuItem ctxtSchedChng_Remove;
         private System.Windows.Forms.GroupBox grpSetDrv;
+        private System.Windows.Forms.GroupBox grpMtr2Set;
+        private System.Windows.Forms.Button btnMtr2SetVals;
+        private System.Windows.Forms.TextBox txtMtr2FLC;
+        private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.ComboBox cmbMtr2PartNum;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.ComboBox cmbMtr2VoltMax;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.ComboBox cmbMtr2FreqBase;
     }
 }
 

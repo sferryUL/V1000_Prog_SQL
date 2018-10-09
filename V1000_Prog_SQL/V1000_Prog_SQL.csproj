@@ -7,7 +7,7 @@
     <ProjectGuid>{B1B3A7C2-88E8-4ADE-B42D-DE34CEAE95E7}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <RootNamespace>V1000_Drive_Programmer</RootNamespace>
-    <AssemblyName>V1000_Drive_Programmer</AssemblyName>
+    <AssemblyName>Urschel VFD Programmer</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -42,7 +42,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>N:\ELECTRICAL DATA\APPLICATIONS\VFD Programmer\</OutputPath>
+    <OutputPath>N:\ELECTRICAL DATA\APPLICATIONS\VFD Programmer - SQL\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -65,9 +65,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="dBFunc.cs" />
-    <Compile Include="dB_Func.cs">
-      <SubType>Form</SubType>
-    </Compile>
     <Compile Include="GenFunc.cs" />
     <Compile Include="Urschel.cs" />
     <Compile Include="V1000_ModbusRTU.cs" />

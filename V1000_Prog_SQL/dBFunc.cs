@@ -150,11 +150,17 @@ namespace dBFunc
             return result;
         }
 
-        public static void Delete(ref SqlConnection p_Conn, string p_Tbl, string p_CondItem, string p_Cond)
+        public static bool Delete(ref SqlConnection p_Conn, string p_Tbl, string p_CondItem, string p_Cond)
         {
+            bool result = false; 
+
             string sql = string.Format("DELETE FROM {0} WHERE {1} = {2};", p_Tbl, p_CondItem, p_Cond);
             SqlCommand cmd = new SqlCommand(sql, p_Conn);
-            cmd.ExecuteNonQuery();
+            int cnt = cmd.ExecuteNonQuery();
+            if(cnt > 0)
+                result = true;
+
+            return result;
         }
 
         public static void TblClone(ref SqlConnection p_Conn, string p_TblTmplt, string p_TblNew)

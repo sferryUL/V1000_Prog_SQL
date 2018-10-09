@@ -188,7 +188,7 @@ namespace V1000_Prog_SQL
         {
             bool ret_val = false;
 
-            cmbParamGroup.Items.Clear();
+            cmbDrvParamGrp.Items.Clear();
 
             // Get the list of parameter groupings available and fill the Parameter group combobox
             string file = p_Row[p_Col].ToString() + dbFileExt;
@@ -200,7 +200,7 @@ namespace V1000_Prog_SQL
                 foreach(DataRow dr in p_Tbl.Rows)
                 {
                     string str = dr["PARAM_GRP"].ToString() + " - " + dr["GRP_DESC"].ToString();
-                    cmbParamGroup.Items.Add(str);
+                    cmbDrvParamGrp.Items.Add(str);
                 }
             }
 
@@ -355,8 +355,6 @@ namespace V1000_Prog_SQL
 
         public void GetMotorCurrent()
         {
-            txtMtrFLC.Text = "";
-
             // First combine all strings to create the appropriate column header for the motor current data 
             string str_volt = cmbMtrVoltMax.SelectedItem.ToString();
             string str_freq = cmbMtrFreqBase.SelectedItem.ToString();
@@ -373,7 +371,6 @@ namespace V1000_Prog_SQL
                         txtMtrFLC.Text = dr[0].ToString();
                 }
             }
-
         }
 
     }
