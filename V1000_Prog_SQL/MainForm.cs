@@ -27,28 +27,11 @@ namespace V1000_Prog_SQL
         #region Global Class Object/Variable Declarations
 
         // Database Manipulation Variables
-        //const string DataDir = "C:\\Users\\Public\\VFD_Prog_Data\\";
-        const string DataDir = "N:\\ELECTRICAL DATA\\APPLICATIONS\\VFD Programmer\\data\\";
-        //const string DataDir = "data\\";
-        //const string DataDir = "C:\\Users\\steve\\source\\repos\\V1000_Drive_Programmer\\V1000_Drive_Programmer\\data\\";
-        //const string DataDir = "C:\\Users\\sferry\\source\\repos\\V1000_Drive_Programmer\\V1000_Drive_Programmer\\data\\";
-        //const string DataDir = "C:\\Users\\sferry\\desktop\\data\\";
 
         const string UL_Srv = "ULSQL12T";
         const string UL_dB = "ElectricalApps";
 
         SqlConnection dBConn = new SqlConnection();
-
-        const string OLEBaseStr = "Provider=Microsoft.ACE.OLEDB.12.0;Data Source='";
-        const string OLEEndStr = "';Extended Properties='Excel 12.0 XML;HDR=YES;';";
-        const string dbFileExt = ".XLSX";
-
-        // Urschel Electrical Databases
-        const string dBMachine = "MACH_DATA";
-        const string dBMotor = "MOTOR_DATA";
-        const string dBChart = "CHART_LIST";
-
-        const string dBChartExt = "_CHARTS";
 
         // VFD status and communication variables
         uint VFDReadRegCnt = 0;
@@ -968,12 +951,11 @@ namespace V1000_Prog_SQL
         private ushort Cell2RegVal(string p_CellVal, V1000_Param_Data p_Param)
         {
             double val;
-            ushort RegVal = 0;
 
             val = Cell2Double(p_CellVal, GetRoundCnt(p_Param.Multiplier));
-            RegVal = (ushort)(val * p_Param.Multiplier);
+            val = Math.Round((val * Convert.ToDouble(p_Param.Multiplier)), 0);
 
-            return RegVal;
+            return (ushort)val;
         }
 
         private byte GetRoundCnt(ushort p_Multiplier)
@@ -1022,8 +1004,6 @@ namespace V1000_Prog_SQL
 
             return RetVal;
         }
-
-        
 
         #endregion
 
@@ -2063,33 +2043,6 @@ namespace V1000_Prog_SQL
 
         #region Motor Specific Functions
 
-        private void cmbMtrPartNum_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            txtMtrFLC.Text = GetMtrFLC(cmbMtrPartNum.Text, cmbMtrVoltMax.Text, cmbMtrFreqBase.Text);
-        }
-
-        private void cmbMtrPartNum_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyValue == (int)Keys.Enter)
-                txtMtrFLC.Text = GetMtrFLC(cmbMtrPartNum.Text, cmbMtrVoltMax.Text, cmbMtrFreqBase.Text);
-        }
-
-        private void cmbMtrVoltMax_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(cmbMtrPartNum.SelectedIndex < 0)
-                return;
-
-            txtMtrFLC.Text = GetMtrFLC(cmbMtrPartNum.Text, cmbMtrVoltMax.Text, cmbMtrFreqBase.Text);
-        }
-
-        private void cmbMtrFreqBase_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if(cmbMtrPartNum.SelectedIndex < 0)
-                return;
-
-            txtMtrFLC.Text = GetMtrFLC(cmbMtrPartNum.Text, cmbMtrVoltMax.Text, cmbMtrFreqBase.Text);
-        }
-
         private void MtrVoltMax_SelectedIndexChanged(object sender, EventArgs e)
         {
             ComboBox cmbMtrVolt, cmbMtrFreq, cmbMtrNum;
@@ -2231,6 +2184,46 @@ namespace V1000_Prog_SQL
             {
                 MessageBox.Show("Parameter Location Error!!");
             }
+        }
+
+        private void btnMtr2SetVals_Click(object sender, EventArgs e)
+        {
+            ushort mtr2_volt_out = 0, mtr2_freq_base = 0, mtr2_fla = 0;
+
+            if((cmbMachSupplyVolt.SelectedIndex == -1) || (cmbMtr2FreqBase.SelectedIndex == -1) || (txtMtr2FLC.Text == ""))
+            {
+                MessageBox.Show("Machine supply voltage, supply frequency, and motor FLA must have valid entries!");
+                return;
+            }
+
+            // Get all the index values in the full parameter list for each of these parameters
+            int idx_volt_out = GetParamIndex(Mtr2VoltMaxOutParamNum, Param_List);
+            int idx_freq_base = GetParamIndex(Mtr2FreqBaseParamNum, Param_List);
+            int idx_fla = GetParamIndex(Mtr2RatedCurrParamNum, Param_List);
+
+            if((idx_volt_out > 0) && (idx_freq_base > 0) && (idx_fla > 0))
+            {
+                try
+                {
+                    mtr2_volt_out = Cell2RegVal((string)cmbMtr2VoltMax.SelectedItem, Param_List[idx_volt_out]);
+                    mtr2_freq_base = Cell2RegVal((string)cmbMtr2FreqBase.SelectedItem, Param_List[idx_freq_base]);
+                    mtr2_fla = Cell2RegVal(txtMtr2FLC.Text, Param_List[idx_fla]);
+                }
+                catch
+                {
+                    MessageBox.Show("Entry Error!!");
+                    return;
+                }
+
+                UpdateParamViews(mtr2_volt_out, idx_volt_out);       // Set the maximum output voltage parameter
+                UpdateParamViews(mtr2_freq_base, idx_freq_base);     // Set the base frequency parameter
+                UpdateParamViews(mtr2_fla, idx_fla);                 // Set the motor rated current parameter
+            }
+            else
+            {
+                MessageBox.Show("Parameter Location Error!!");
+            }
+
         }
 
         private void btnMtrStore_Click(object sender, EventArgs e)
@@ -2400,46 +2393,7 @@ namespace V1000_Prog_SQL
         }
 
         #endregion
-
-        private void btnMtr2SetVals_Click(object sender, EventArgs e)
-        {
-            ushort mtr2_volt_out = 0, mtr2_freq_base = 0, mtr2_fla = 0;
-
-            if((cmbMachSupplyVolt.SelectedIndex == -1) || (cmbMtr2FreqBase.SelectedIndex == -1) || (txtMtr2FLC.Text == ""))
-            {
-                MessageBox.Show("Machine supply voltage, supply frequency, and motor FLA must have valid entries!");
-                return;
-            }
-
-            // Get all the index values in the full parameter list for each of these parameters
-            int idx_volt_out = GetParamIndex(Mtr2VoltMaxOutParamNum, Param_List);
-            int idx_freq_base = GetParamIndex(Mtr2FreqBaseParamNum, Param_List);
-            int idx_fla = GetParamIndex(Mtr2RatedCurrParamNum, Param_List);
-
-            if((idx_volt_out > 0) && (idx_freq_base > 0) && (idx_fla > 0))
-            {
-                try
-                {
-                    mtr2_volt_out = Cell2RegVal((string)cmbMtr2VoltMax.SelectedItem, Param_List[idx_volt_out]);
-                    mtr2_freq_base = Cell2RegVal((string)cmbMtr2FreqBase.SelectedItem, Param_List[idx_freq_base]);
-                    mtr2_fla = Cell2RegVal(txtMtr2FLC.Text, Param_List[idx_fla]);
-                }
-                catch
-                {
-                    MessageBox.Show("Entry Error!!");
-                    return;
-                }
-
-                UpdateParamViews(mtr2_volt_out, idx_volt_out);       // Set the maximum output voltage parameter
-                UpdateParamViews(mtr2_freq_base, idx_freq_base);     // Set the base frequency parameter
-                UpdateParamViews(mtr2_fla, idx_fla);                 // Set the motor rated current parameter
-            }
-            else
-            {
-                MessageBox.Show("Parameter Location Error!!");
-            }
-
-        }
+        
     }
 
     public class ThreadProgressArgs : EventArgs
