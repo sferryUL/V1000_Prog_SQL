@@ -1,6 +1,6 @@
 ﻿namespace V1000_Prog_SQL
 {
-    partial class frmMain
+    partial class frmProg
     {
         /// <summary>
         /// Required designer variable.
@@ -44,7 +44,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmMain));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(frmProg));
             this.txtSlaveAddr = new System.Windows.Forms.TextBox();
             this.lblSlaveAddr = new System.Windows.Forms.Label();
             this.grpCommSettings = new System.Windows.Forms.GroupBox();

@@ -16,7 +16,7 @@ namespace V1000_Prog_SQL
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new frmMain());
+            Application.Run(new frmProg());
         }
     }
 }

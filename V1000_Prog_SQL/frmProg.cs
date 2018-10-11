@@ -22,7 +22,7 @@ using GenFunc;
 
 namespace V1000_Prog_SQL
 {
-    public partial class frmMain : Form
+    public partial class frmProg : Form
     {
         #region Global Class Object/Variable Declarations
 
@@ -81,7 +81,7 @@ namespace V1000_Prog_SQL
 
         #region Main Form Functions
 
-        public frmMain()
+        public frmProg()
         {
             InitializeComponent();
         }
